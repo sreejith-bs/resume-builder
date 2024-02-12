@@ -41,6 +41,5 @@ export async function GET(event) {
         filter_single: { id: user_id }
     })).run(client)
 
-    console.log("MMM", responseBody);
     return json(responseBody);
 }
