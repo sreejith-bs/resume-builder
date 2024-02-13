@@ -1,5 +1,5 @@
 <script>
-    import Form from "../../../../components/Form.svelte";
+    import Form from "../../../../components/Form/Form.svelte";
     import { page } from "$app/stores";
 
     // @params {any} params
