@@ -39,6 +39,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"date-picker-svelte": "^2.10.1",
 		"edgedb": "^1.4.1"
 	}
 }

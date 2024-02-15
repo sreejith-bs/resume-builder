@@ -9,14 +9,15 @@
 		last_name: '',
 		email: '',
 		phone: '',
-		dob: ''
+		dob: '',
+        country: '',
+        city: ''
 	};
 
 	let defaultTitle = 'Personal Details';
 	let title = userDetails.user_details_heading ? userDetails.user_details_heading : defaultTitle;
 	$: {
 		userDetails.user_details_heading = title;
-        console.log('userDetails-2', userDetails)
 	}
 </script>
 
@@ -71,6 +72,9 @@
 		<label class="label">
 			<h5 class="text-sm tracking-wider">Email</h5>
 			<input
+                name="email"
+				id="email"
+				bind:value={userDetails.email}
 				class="input tracking-wider rounded-sm border-0 border-s-4"
 				type="text"
 				placeholder="..."
@@ -79,6 +83,9 @@
 		<label class="label">
 			<h5 class="text-sm tracking-wider">Phone</h5>
 			<input
+                name="phone"
+				id="phone"
+				bind:value={userDetails.phone}
 				class="input tracking-wider rounded-sm border-0 border-s-4"
 				type="text"
 				placeholder="..."
@@ -89,6 +96,9 @@
 		<label class="label">
 			<h5 class="text-sm tracking-wider">Country</h5>
 			<input
+                name="country"
+				id="country"
+				bind:value={userDetails.country}
 				class="input tracking-wider rounded-sm border-0 border-s-4"
 				type="text"
 				placeholder="..."
@@ -97,6 +107,9 @@
 		<label class="label">
 			<h5 class="text-sm tracking-wider">City</h5>
 			<input
+                name="city"
+				id="city"
+				bind:value={userDetails.city}
 				class="input tracking-wider rounded-sm border-0 border-s-4"
 				type="text"
 				placeholder="..."

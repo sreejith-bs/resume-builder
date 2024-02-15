@@ -19,36 +19,117 @@
 		last_name: '',
 		email: '',
 		phone: '',
-		dob: ''
+		country: '',
+		city: ''
 	};
-    let address = {
-        address: '',
-        postal_code: '',
-        country: '',
-        city: '',
-        driving_license: '',
-        nationality: '',
-        place_of_birth: '',
-        is_active: true
-      };
+	let address = {
+		address: '',
+		postal_code: '',
+		driving_license: '',
+		nationality: '',
+		place_of_birth: '',
+		dob: '',
+		is_active: true
+	};
+	let profile = {
+		profile_heading: '',
+		profile_description: ''
+	};
+	let experience = {
+		experience_heading: '',
+		data: [
+			{
+				job_title: '',
+				employer: '',
+				start_date: '',
+				end_date: '',
+				city: '',
+				country: '',
+				description: '',
+				current_status: false,
+				is_active: true
+			}
+		]
+	};
+	let education = {
+		education_heading: '',
+		data: [
+			{
+				course: '',
+				institution: '',
+				start_date: '',
+				end_date: '',
+				city: '',
+				country: '',
+				description: '',
+				current_status: false,
+				is_active: true
+			}
+		]
+	};
+	let certificate = {
+		certificate_heading: '',
+		data: [
+			{
+				label: '',
+				url: '',
+				is_active: true
+			}
+		]
+	};
+	let social_media = {
+		social_media_heading: '',
+		data: [
+			{
+				label: '',
+				url: '',
+				is_active: true
+			}
+		]
+	};
+	let skills = {
+		skills_heading: '',
+		data: [
+			{
+				label: '',
+				rating: null,
+				is_active: true
+			}
+		]
+	};
+	let language = {
+		language_heading: '',
+		data: [
+			{
+				language: '',
+				rating: null,
+				is_active: true
+			}
+		]
+	};
+	let hobbies = {
+		hobbies_heading: '',
+		hobbies: '',
+		is_active: true
+	};
 
-	// $: {
-	// 	console.log('userDetails', userDetails);
-	// }
+	$: {
+		console.log('certificate', certificate);
+	}
 </script>
 
 <div class="container justify-center mx-auto py-20 w-4/5">
 	<form>
 		<UserDetails bind:userDetails />
-		<Address />
-		<Profile />
-		<Experience />
-		<Education />
-		<Certificate />
-		<Socialmedia />
-		<Skills />
-		<Language />
-		<Hobbies />
+		<Address bind:address />
+		<Profile bind:profile />
+		<Experience bind:experience />
+		<Education bind:education />
+		<Certificate bind:certificate />
+		<Socialmedia bind:social_media />
+		<Skills bind:skills />
+		<Language bind:language />
+		<Hobbies bind:hobbies />
 		<div class="flex justify-center pt-10">
 			<button type="button" class="btn variant-filled">Submit</button>
 		</div>

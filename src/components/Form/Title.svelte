@@ -28,9 +28,9 @@
 			isEditing = false;
 		}
 	}
-    $: {
-        console.log('title', title)
-    }
+    // $: {
+    //     console.log('title', title)
+    // }
 </script>
 
 <div class="title-container">
