@@ -1,33 +1,46 @@
 <script>
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-
+	import { languageData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
 
-	export let language = {
-        language_heading: '',
-        data: [
-		{
-			language: '',
-			rating: null,
-			is_active: true
-		}
-	]};
+	let language = $languageData;
 	function add() {
-		language.data = language.data.concat({
-			language: '',
-			rating: null,
-			is_active: true
-		});
+		// language.data = language.data.concat({
+		// 	language: '',
+		// 	rating: null,
+		// 	is_active: true
+		// });
+		languageData.update((data) => ({
+			...data,
+			data: [...data.data, {}] // Add a new empty object to the array
+		}));
 	}
 	function remove(index = 0) {
-		language.data = language.data.filter((lang, deleteIndex) => index !== deleteIndex);
+		// language.data = language.data.filter((lang, deleteIndex) => index !== deleteIndex);
+		languageData.update((data) => ({
+			...data,
+			data: data.data.filter((item, i) => i !== index)
+		}));
 	}
 
-    let defaultTitle = 'Language';
+	let defaultTitle = 'Language';
 	let title = language.language_heading ? language.language_heading : defaultTitle;
+
 	$: {
-		language.language_heading = title;
+		// language.language_heading = title;
+		languageData.update((data) => ({
+			...data,
+			language_heading: title
+		}));
+		language = $languageData;
 	}
+
+	const updateLanguageDetails = (field, value, index = 0) => {
+		languageData.update((data) => {
+			data.data[index][field] = value;
+			return data;
+		});
+	};
 </script>
 
 <div id="language">
@@ -50,7 +63,7 @@
 							{#if index !== 0}
 								<button
 									type="button"
-									class="btn btn-sm variant-filled"
+									class="variant-filled btn btn-sm"
 									on:click={() => remove(index)}>Delete</button
 								>
 							{/if}
@@ -58,14 +71,15 @@
 					</div>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
-					<div class="grid md:grid-cols-2 gap-4 md:gap-10 pt-3">
+					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Language</h5>
 							<input
 								name="language"
 								id="language"
 								bind:value={lang.language}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateLanguageDetails('language', lang.language, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -76,7 +90,8 @@
 								name="rating"
 								id="rating"
 								bind:value={lang.rating}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateLanguageDetails('rating', lang.rating, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -87,7 +102,7 @@
 		</Accordion>
 	{/each}
 	<div class="pt-3">
-		<button type="button" class="btn btn-sm variant-filled" on:click={add}
+		<button type="button" class="variant-filled btn btn-sm" on:click={add}
 			>+ Add one more language</button
 		>
 	</div>

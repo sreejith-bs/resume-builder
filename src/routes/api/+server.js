@@ -53,7 +53,6 @@ export async function POST() {
       "skills_heading": "Skills",
       "language_heading": "Languages",
       "hobbies_heading": "Hobbies",
-      "reference_heading": "References",
       "address": {
         "address": "123 Main St",
         "postal_code": "12345",

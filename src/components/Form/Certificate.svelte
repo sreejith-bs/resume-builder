@@ -1,39 +1,52 @@
 <script>
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-
+	import { certificateData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
 
-	export let certificate = {
-		certificate_heading: '',
-		data: [
-			{
-				label: '',
-				url: '',
-				is_active: true
-			}
-		]
-	};
+	let certificate = $certificateData;
+
 	function add() {
-		certificate.data = certificate.data.concat({
-			label: '',
-			url: '',
-			is_active: true
-		});
+		// certificate.data = certificate.data.concat({
+		// 	label: '',
+		// 	url: '',
+		// 	is_active: true
+		// });
+		certificateData.update((data) => ({
+			...data,
+			data: [...data.data, {}] // Add a new empty object to the array
+		}));
 	}
 	function remove(index = 0) {
-		certificate.data = certificate.data.filter((cert, deleteIndex) => index !== deleteIndex);
+		// certificate.data = certificate.data.filter((cert, deleteIndex) => index !== deleteIndex);
+		certificateData.update((data) => ({
+			...data,
+			data: data.data.filter((item, i) => i !== index)
+		}));
 	}
 
 	let defaultTitle = 'Certificate';
 	let title = certificate.certificate_heading ? certificate.certificate_heading : defaultTitle;
+
 	$: {
-		certificate.certificate_heading = title;
+		// certificate.certificate_heading = title;
+		certificateData.update((data) => ({
+			...data,
+			certificate_heading: title
+		}));
+		certificate = $certificateData;
 	}
+
+	const updateCertificateDetails = (field, value, index = 0) => {
+		certificateData.update((data) => {
+			data.data[index][field] = value;
+			return data;
+		});
+	};
 </script>
 
 <div id="certificate">
 	<div class="pt-4">
-		<Title bind:title/>
+		<Title bind:title />
 		<!-- <h3 class="h3">Certificate</h3> -->
 	</div>
 	{#each certificate.data as cert, index}
@@ -51,7 +64,7 @@
 							{#if index !== 0}
 								<button
 									type="button"
-									class="btn btn-sm variant-filled"
+									class="variant-filled btn btn-sm"
 									on:click={() => remove(index)}>Delete</button
 								>
 							{/if}
@@ -59,14 +72,15 @@
 					</div>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
-					<div class="grid md:grid-cols-2 gap-4 md:gap-10 pt-3">
+					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Course</h5>
 							<input
 								name="label"
 								id="label"
 								bind:value={cert.label}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateCertificateDetails('label', cert.label, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -77,7 +91,8 @@
 								name="url"
 								id="url"
 								bind:value={cert.url}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateCertificateDetails('url', cert.url, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -88,7 +103,7 @@
 		</Accordion>
 	{/each}
 	<div class="pt-3">
-		<button type="button" class="btn btn-sm variant-filled" on:click={add}
+		<button type="button" class="variant-filled btn btn-sm" on:click={add}
 			>+ Add one more certificate</button
 		>
 	</div>

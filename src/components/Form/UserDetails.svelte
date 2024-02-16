@@ -1,24 +1,24 @@
 <script>
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import Title from '../../components/Form/Title.svelte';
+	import { userDetailsData } from '../../store/store.js';
 
-	export let userDetails = {
-		user_details_heading: '',
-		job_title: '',
-		first_name: '',
-		last_name: '',
-		email: '',
-		phone: '',
-		dob: '',
-        country: '',
-        city: ''
-	};
-
+	let userDetails = $userDetailsData
 	let defaultTitle = 'Personal Details';
 	let title = userDetails.user_details_heading ? userDetails.user_details_heading : defaultTitle;
 	$: {
-		userDetails.user_details_heading = title;
+		// userDetails.user_details_heading = title;
+		userDetailsData.update((data) => ({
+			...data,
+			user_details_heading: title
+		}));
 	}
+	const updateUserDetails = (field, value) => {
+		userDetailsData.update((data) => ({
+			...data,
+			[field]: value
+		}));
+	};
 </script>
 
 <div id="personal-details">
@@ -33,7 +33,8 @@
 				name="job_title"
 				id="job_title"
 				bind:value={userDetails.job_title}
-				class="input tracking-wider rounded-sm border-0 border-s-4"
+				on:input={() => updateUserDetails('job_title', userDetails.job_title)}
+				class="input rounded-sm border-0 border-s-4 tracking-wider"
 				type="text"
 				placeholder="e.g. Software Engineer"
 			/>
@@ -44,14 +45,15 @@
 			rounded="rounded-none"
 		/>
 	</div>
-	<div class="grid md:grid-cols-2 gap-4 md:gap-10 md:py-3">
+	<div class="grid gap-4 md:grid-cols-2 md:gap-10 md:py-3">
 		<label class="label">
 			<h5 class="text-sm tracking-wider">First Name</h5>
 			<input
 				name="first_name"
 				id="first_name"
 				bind:value={userDetails.first_name}
-				class="input tracking-wider rounded-sm border-0 border-s-4"
+				on:input={() => updateUserDetails('first_name', userDetails.first_name)}
+				class="input rounded-sm border-0 border-s-4 tracking-wider"
 				type="text"
 				placeholder="..."
 			/>
@@ -62,20 +64,22 @@
 				name="last_name"
 				id="last_name"
 				bind:value={userDetails.last_name}
-				class="input tracking-wider rounded-sm border-0 border-s-4"
+				on:input={() => updateUserDetails('last_name', userDetails.last_name)}
+				class="input rounded-sm border-0 border-s-4 tracking-wider"
 				type="text"
 				placeholder="..."
 			/>
 		</label>
 	</div>
-	<div class="grid md:grid-cols-2 gap-4 md:gap-10 pt-5 md:py-3">
+	<div class="grid gap-4 pt-5 md:grid-cols-2 md:gap-10 md:py-3">
 		<label class="label">
 			<h5 class="text-sm tracking-wider">Email</h5>
 			<input
-                name="email"
+				name="email"
 				id="email"
 				bind:value={userDetails.email}
-				class="input tracking-wider rounded-sm border-0 border-s-4"
+				on:input={() => updateUserDetails('email', userDetails.email)}
+				class="input rounded-sm border-0 border-s-4 tracking-wider"
 				type="text"
 				placeholder="..."
 			/>
@@ -83,23 +87,25 @@
 		<label class="label">
 			<h5 class="text-sm tracking-wider">Phone</h5>
 			<input
-                name="phone"
+				name="phone"
 				id="phone"
 				bind:value={userDetails.phone}
-				class="input tracking-wider rounded-sm border-0 border-s-4"
+				on:input={() => updateUserDetails('phone', userDetails.phone)}
+				class="input rounded-sm border-0 border-s-4 tracking-wider"
 				type="text"
 				placeholder="..."
 			/>
 		</label>
 	</div>
-	<div class="grid md:grid-cols-2 gap-4 md:gap-10 pt-5 md:py-3">
+	<div class="grid gap-4 pt-5 md:grid-cols-2 md:gap-10 md:py-3">
 		<label class="label">
 			<h5 class="text-sm tracking-wider">Country</h5>
 			<input
-                name="country"
+				name="country"
 				id="country"
 				bind:value={userDetails.country}
-				class="input tracking-wider rounded-sm border-0 border-s-4"
+				on:input={() => updateUserDetails('country', userDetails.country)}
+				class="input rounded-sm border-0 border-s-4 tracking-wider"
 				type="text"
 				placeholder="..."
 			/>
@@ -107,10 +113,11 @@
 		<label class="label">
 			<h5 class="text-sm tracking-wider">City</h5>
 			<input
-                name="city"
+				name="city"
 				id="city"
 				bind:value={userDetails.city}
-				class="input tracking-wider rounded-sm border-0 border-s-4"
+				on:input={() => updateUserDetails('city', userDetails.city)}
+				class="input rounded-sm border-0 border-s-4 tracking-wider"
 				type="text"
 				placeholder="..."
 			/>

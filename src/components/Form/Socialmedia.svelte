@@ -1,32 +1,45 @@
 <script>
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-
 	import Title from '../../components/Form/Title.svelte';
+	import { socialMediaData } from '../../store/store.js';
 
-	export let social_media = {
-		social_media_heading: '',
-		data: [
-		{
-			label: '',
-			url: '',
-			is_active: true
-		}
-	]}
+	let social_media = $socialMediaData
 	function add() {
-		social_media.data = social_media.data.concat({
-			label: '',
-			url: '',
-			is_active: true
-		});
+		// social_media.data = social_media.data.concat({
+		// 	label: '',
+		// 	url: '',
+		// 	is_active: true
+		// });
+		socialMediaData.update((data) => ({
+			...data,
+			data: [...data.data, {}] // Add a new empty object to the array
+		}));
 	}
 	function remove(index = 0) {
-		social_media.data = social_media.data.filter((soc, deleteIndex) => index !== deleteIndex);
+		// social_media.data = social_media.data.filter((soc, deleteIndex) => index !== deleteIndex);
+		socialMediaData.update((data) => ({
+			...data,
+			data: data.data.filter((item, i) => i !== index) // Filter out the object at the specified index
+		}));
 	}
+
 	let defaultTitle = 'Website & Social Links';
 	let title = social_media.social_media_heading ? social_media.social_media_heading : defaultTitle;
+
 	$: {
-		social_media.social_media_heading = title;
+		// social_media.social_media_heading = title;
+		socialMediaData.update((data) => ({
+			...data,
+			social_media_heading: title
+		}));
+		social_media = $socialMediaData
 	}
+	const updateSocialMediaDetails = (field, value, index = 0) => {
+		socialMediaData.update((data) => {
+			data.data[index][field] = value;
+			return data;
+		});
+	};
 </script>
 
 <div id="socialMedia">
@@ -49,7 +62,7 @@
 							{#if index !== 0}
 								<button
 									type="button"
-									class="btn btn-sm variant-filled"
+									class="variant-filled btn btn-sm"
 									on:click={() => remove(index)}>Delete</button
 								>
 							{/if}
@@ -57,14 +70,15 @@
 					</div>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
-					<div class="grid md:grid-cols-2 gap-4 md:gap-10 pt-3">
+					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Label</h5>
 							<input
 								name="label"
 								id="label"
 								bind:value={soc.label}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateSocialMediaDetails('label', soc.label, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -75,7 +89,8 @@
 								name="url"
 								id="url"
 								bind:value={soc.url}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateSocialMediaDetails('url', soc.url, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -86,7 +101,7 @@
 		</Accordion>
 	{/each}
 	<div class="pt-3">
-		<button type="button" class="btn btn-sm variant-filled" on:click={add}
+		<button type="button" class="variant-filled btn btn-sm" on:click={add}
 			>+ Add one more socialmedia</button
 		>
 	</div>

@@ -1,15 +1,17 @@
 <script>
 	import Title from '../../components/Form/Title.svelte';
+	import { profileData } from '../../store/store.js';
 
-	export let profile = {
-		profile_heading: '',
-		profile_description: ''
-	};
+	let profile = $profileData
 
 	let defaultTitle = 'My Profile';
 	let title = profile.profile_heading ? profile.profile_heading : defaultTitle;
 	$: {
-		profile.profile_heading = title;
+		// profile.profile_heading = title;
+		profileData.update((data) => ({
+			...data,
+			profile_heading: title
+		}));
 	}
 </script>
 

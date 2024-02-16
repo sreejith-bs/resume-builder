@@ -1,44 +1,62 @@
 <script>
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-
+	import { experienceData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
+	import DatePicker from '../DatePicker.svelte';
 
-	export let experience = {
-		experience_heading: '',
-		data: [
-		{
-			job_title: '',
-			employer: '',
-			start_date: '',
-			end_date: '',
-			city: '',
-			country: '',
-			description: '',
-			current_status: false,
-			is_active: true
-		}
-	]};
+	let experience = $experienceData;
+	let startDate = new Date();
+	let endDate = new Date();
 
 	function add() {
-		experience.data = experience.data.concat({
-			job_title: '',
-			employer: '',
-			start_date: '',
-			end_date: '',
-			city: '',
-			country: '',
-			description: '',
-			current_status: false,
-			is_active: true
-		});
+		// experience.data = experience.data.concat({
+		// 	job_title: '',
+		// 	employer: '',
+		// 	start_date: '',
+		// 	end_date: '',
+		// 	city: '',
+		// 	country: '',
+		// 	description: '',
+		// 	current_status: false,
+		// 	is_active: true
+		// });
+		experienceData.update((data) => ({
+			...data,
+			data: [...data.data, {}] // Add a new empty object to the array
+		}));
 	}
 	function remove(index = 0) {
-		experience.data = experience.data.filter((exp, deleteIndex) => index !== deleteIndex);
+		// experience.data = experience.data.filter((exp, deleteIndex) => index !== deleteIndex);
+		experienceData.update((data) => ({
+			...data,
+			data: data.data.filter((item, i) => i !== index)
+		}));
 	}
 	let defaultTitle = 'Employment History';
 	let title = experience.experience_heading ? experience.experience_heading : defaultTitle;
+
 	$: {
-		experience.experience_heading = title;
+		// experience.experience_heading = title;
+		experienceData.update((data) => ({
+			...data,
+			experience_heading: title
+		}));
+		experience = $experienceData;
+	}
+
+	const updateExperienceDetails = (field, value, index = 0) => {
+		experienceData.update((data) => {
+			data.data[index][field] = value;
+			return data;
+		});
+	};
+
+	function formatDate(date) {
+		return new Date(date).toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'numeric',
+			day: 'numeric'
+		});
 	}
 </script>
 
@@ -54,14 +72,18 @@
 				<svelte:fragment slot="summary">
 					<div class="flex flex-row">
 						<div class="basis-1/5">
-							<h4 class="font-bold tracking-wider">{exp.job_title ? exp.job_title : '(Not Specified)'}</h4>
-							<h5 class="text-sm tracking-wider">{exp.start_date} - {exp.end_date}</h5>
+							<h4 class="font-bold tracking-wider">
+								{exp.job_title ? exp.job_title : '(Not Specified)'}
+							</h4>
+							<h5 class="text-sm tracking-wider">
+								{formatDate(startDate)} - {formatDate(endDate)}
+							</h5>
 						</div>
 						<div>
 							{#if index !== 0}
 								<button
 									type="button"
-									class="btn btn-sm variant-filled"
+									class="variant-filled btn btn-sm"
 									on:click={() => remove(index)}>Delete</button
 								>
 							{/if}
@@ -69,14 +91,15 @@
 					</div>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
-					<div class="grid md:grid-cols-2 gap-4 md:gap-10 pt-3">
+					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Job Title</h5>
 							<input
 								name="job_title"
 								id="job_title"
 								bind:value={exp.job_title}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateExperienceDetails('job_title', exp.job_title, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -87,44 +110,40 @@
 								name="employer"
 								id="employer"
 								bind:value={exp.employer}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateExperienceDetails('employer', exp.employer, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
 						</label>
 					</div>
-					<div class="grid md:grid-cols-2 gap-4 md:gap-10 pt-3">
+					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Start Date</h5>
-							<input
-								name="start_date"
-								id="start_date"
-								bind:value={exp.start_date}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
-								type="text"
-								placeholder="..."
+							<DatePicker
+								bind:date={startDate}
+								id="expStartDate"
+								on:dateChange={updateExperienceDetails('start_date', startDate, index)}
 							/>
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">End Date</h5>
-							<input
-								name="end_date"
-								id="end_date"
-								bind:value={exp.end_date}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
-								type="text"
-								placeholder="..."
+							<DatePicker
+								bind:date={endDate}
+								id="expEndDate"
+								on:dateChange={updateExperienceDetails('end_date', endDate, index)}
 							/>
 						</label>
 					</div>
-					<div class="grid md:grid-cols-2 gap-4 md:gap-10 pt-3">
+					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">City</h5>
 							<input
 								name="city"
 								id="city"
 								bind:value={exp.city}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateExperienceDetails('city', exp.city, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -135,7 +154,8 @@
 								name="country"
 								id="country"
 								bind:value={exp.country}
-								class="input tracking-wider rounded-sm border-0 border-s-4"
+								on:input={() => updateExperienceDetails('country', exp.country, index)}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
@@ -144,10 +164,11 @@
 					<label class="label">
 						<span class="text-sm tracking-wider">Description</span>
 						<textarea
-							name="country"
-							id="country"
-							bind:value={exp.country}
-							class="textarea tracking-wider rounded-sm border-0 border-s-4"
+							name="description"
+							id="description"
+							bind:value={exp.description}
+							on:input={() => updateExperienceDetails('description', exp.description, index)}
+							class="textarea rounded-sm border-0 border-s-4 tracking-wider"
 							rows="4"
 							placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
 						/>
@@ -157,7 +178,7 @@
 		</Accordion>
 	{/each}
 	<div class="pt-3">
-		<button type="button" class="btn btn-sm variant-filled" on:click={add}
+		<button type="button" class="variant-filled btn btn-sm" on:click={add}
 			>+ Add one more experience</button
 		>
 	</div>

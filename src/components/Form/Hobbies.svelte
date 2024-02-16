@@ -1,17 +1,26 @@
 <script>
 	import Title from '../../components/Form/Title.svelte';
+	import { hobbiesData } from '../../store/store.js';
 
-	export let hobbies = {
-		hobbies_heading: '',
-		hobbies: '',
-		is_active: true
-	};
+	let hobbies = $hobbiesData;
 
 	let defaultTitle = 'Hobbies';
 	let title = hobbies.hobbies_heading ? hobbies.hobbies_heading : defaultTitle;
+
 	$: {
-		hobbies.hobbies_heading = title;
+		// hobbies.hobbies_heading = title;
+		hobbiesData.update((data) => ({
+			...data,
+			hobbies_heading: title
+		}));
 	}
+
+	const updateHobbiesDetails = (field, value) => {
+		hobbiesData.update((data) => ({
+			...data,
+			[field]: value
+		}));
+	};
 </script>
 
 <div id="hobbies">
@@ -25,7 +34,8 @@
 			name="hobbies"
 			id="hobbies"
 			bind:value={hobbies.hobbies}
-			class="textarea tracking-wider rounded-sm border-0 border-s-4"
+			on:input={() => updateHobbiesDetails('hobbies', hobbies.hobbies)}
+			class="textarea rounded-sm border-0 border-s-4 tracking-wider"
 			rows="4"
 			placeholder="e.g. Drawing, Cricket, Reading"
 		/>

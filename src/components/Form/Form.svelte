@@ -13,7 +13,7 @@
 	export let theme;
 
 	let userDetails = {
-		user_details_heading: 'Personal Details',
+		user_details_heading: '',
 		job_title: '',
 		first_name: '',
 		last_name: '',
@@ -112,26 +112,70 @@
 		hobbies: '',
 		is_active: true
 	};
+	let form = {
+		userDetails: {
+			user_details_heading: userDetails.user_details_heading,
+			profile_heading: profile.profile_heading,
+			experience_heading: experience.experience_heading,
+			education_heading: education.education_heading,
+			certificate_heading: certificate.certificate_heading,
+			social_media_heading: social_media.social_media_heading,
+			skills_heading: skills.skills_heading,
+			language_heading: language.language_heading,
+			hobbies_heading: hobbies.hobbies_heading,
+			profile_description: profile.profile_description,
+			job_title: userDetails.job_title,
+			first_name: userDetails.first_name,
+			last_name: userDetails.last_name,
+			email: userDetails.email,
+			phone: userDetails.phone,
+			dob: address.dob
+		},
+		address: {
+			address: address.address,
+			postal_code: address.postal_code,
+			driving_license: address.driving_license,
+			nationality: address.nationality,
+			place_of_birth: address.place_of_birth,
+			country: userDetails.country,
+			city: userDetails.city,
+			is_active: address.is_active
+		},
+		experience: experience.data,
+		education: education.data,
+		certificate: certificate.data,
+		social_media: social_media.data,
+		skills: skills.data,
+		language: language.data,
+		hobbies: {
+			hobbies: hobbies.hobbies,
+			is_active: hobbies.is_active
+		}
+	};
 
 	$: {
-		console.log('certificate', certificate);
+		console.log('resume', form.userDetails);
 	}
+
+    const submitForm = async () => {
+        console.log('form', form)
+    }
 </script>
 
 <div class="container justify-center mx-auto py-20 w-4/5">
-	<form>
-		<UserDetails bind:userDetails />
-		<Address bind:address />
-		<Profile bind:profile />
-		<Experience bind:experience />
-		<Education bind:education />
-		<Certificate bind:certificate />
-		<Socialmedia bind:social_media />
-		<Skills bind:skills />
-		<Language bind:language />
-		<Hobbies bind:hobbies />
+	<form on:submit|preventDefault={submitForm}>
+		<UserDetails />
+		<Address />
+		<Profile />
+		<Experience />
+		<Education />
+		<Certificate />
+		<Socialmedia />
+		<Skills />
+		<Language />
+		<Hobbies />
 		<div class="flex justify-center pt-10">
-			<button type="button" class="btn variant-filled">Submit</button>
+			<button type="submit" class="btn variant-filled">Submit</button>
 		</div>
 	</form>
 </div>
