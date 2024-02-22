@@ -6,6 +6,7 @@
 	import { validateForm } from '$lib/validation/validation.js';
 
 	let certificate = $certificateData;
+	let fieldError = $errors.certificate;
 
 	function add() {
 		// certificate.data = certificate.data.concat({
@@ -36,6 +37,7 @@
 			certificate_heading: title
 		}));
 		certificate = $certificateData;
+		fieldError = $errors.certificate;
 	}
 
 	const updateCertificateDetails = (field, value, index = 0) => {
@@ -79,25 +81,29 @@
 							<h5 class="text-sm tracking-wider">Course</h5>
 							<input
 								name="label"
-								id="label"
+								id={`label-${index}`}
 								bind:value={cert.label}
 								on:input={() => updateCertificateDetails('label', cert.label, index)}
+								on:blur={validateForm('label', cert.label, 'certificate', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.label}<p class="error">{fieldError?.[index]?.label}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Url</h5>
 							<input
 								name="url"
-								id="url"
+								id={`url-${index}`}
 								bind:value={cert.url}
 								on:input={() => updateCertificateDetails('url', cert.url, index)}
+								on:blur={validateForm('url', cert.url, 'certificate', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.url}<p class="error">{fieldError?.[index]?.url}</p>{/if}
 						</label>
 					</div>
 				</svelte:fragment>

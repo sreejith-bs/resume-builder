@@ -18,9 +18,27 @@
 	let errorDetails;
 	const submitForm = async () => {
 		// console.log('$form', JSON.stringify($form));
+		const inputFields = document.querySelectorAll('input');
+		// console.log('inputFields', inputFields);
+		inputFields.forEach((input) => {
+			input.dispatchEvent(new Event('blur'));
+		});
+		// const accordionItems = document.querySelectorAll('.accordion-item');
+		// // console.log('accordionItems', accordionItems);
+		// accordionItems.forEach((item) => {
+		// 	const inputFields = item.querySelectorAll('input');
+		// 	// console.log('accordionItems-inputs', inputFields);
+		// 	inputFields.forEach((input) => {
+		// 		input.blur();
+		// 		// input.dispatchEvent(new Event('blur'));
+		// 	});
+		// });
+
 		errorDetails = validateField($form, validationRules);
 		errors.update((data) => {
-			return { data, ...errorDetails };
+			// console.log('y-data', data, 'y-errorDetails', errorDetails);
+			let y = { ...data, ...errorDetails };
+			return y
 		});
 		if (Object.keys(errors).length === 0) {
 			// No errors, submit the form
@@ -49,11 +67,11 @@
 		</div>
 	</form>
 </div>
+
 <style>
 	:global(.error) {
-    font-size: 14px;
-	color: red;
-	margin-top: 0px;
-  }
-
+		font-size: 14px;
+		color: red;
+		margin-top: 0px;
+	}
 </style>

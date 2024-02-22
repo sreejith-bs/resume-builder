@@ -3,10 +3,13 @@
 	import { educationData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
 	import DatePicker from '../DatePicker.svelte';
+	import { errors } from '../../store/store.js';
+	import { validateForm } from '$lib/validation/validation.js';
 
 	let education = $educationData;
-	let startDate = new Date();
-	let endDate = new Date();
+	let eduStartDate = new Date();
+	let eduEndDate = new Date();
+	let fieldError = $errors.education;
 
 	function add() {
 		// education.data = education.data.concat({
@@ -40,9 +43,12 @@
 		// education.education_heading = title;
 		educationData.update((data) => ({
 			...data,
-			education_heading: title
+			education_heading: title,
+			start_date: eduStartDate,
+			end_date: eduEndDate
 		}));
 		education = $educationData;
+		fieldError = $errors.education;
 	}
 
 	const updateEducationDetails = (field, value, index = 0) => {
@@ -78,7 +84,7 @@
 								{edu.course ? edu.course : '(Not Specified)'}
 							</h4>
 							<h5 class="text-sm tracking-wider">
-								{formatDate(startDate)} - {formatDate(endDate)}
+								{formatDate(eduStartDate)} - {formatDate(eduEndDate)}
 							</h5>
 						</div>
 						<div>
@@ -98,43 +104,49 @@
 							<h5 class="text-sm tracking-wider">Course</h5>
 							<input
 								name="course"
-								id="course"
+								id={`course-${index}`}
 								bind:value={edu.course}
 								on:input={() => updateEducationDetails('course', edu.course, index)}
+								on:blur={validateForm('course', edu.course, 'education', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.course}<p class="error">{fieldError?.[index]?.course}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Institution</h5>
 							<input
 								name="institution"
-								id="institution"
+								id={`institution-${index}`}
 								bind:value={edu.institution}
 								on:input={() => updateEducationDetails('institution', edu.institution, index)}
+								on:blur={validateForm('institution', edu.institution, 'education', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.institution}<p class="error">{fieldError?.[index]?.institution}</p>{/if}
 						</label>
 					</div>
 					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Start Date</h5>
 							<DatePicker
-								bind:date={startDate}
-								id="eduStartDate"
-								on:dateChange={updateEducationDetails('start_date', startDate, index)}
+								bind:date={eduStartDate}
+								id={`eduStartDate-${index}`}
+								on:dateChange={updateEducationDetails('start_date', eduStartDate, index)}
 							/>
+							{#if fieldError?.[index]?.start_date}<p class="error">{fieldError?.[index]?.start_date}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">End Date</h5>
 							<DatePicker
-								bind:date={endDate}
-								id="eduEndDate"
-								on:dateChange={updateEducationDetails('end_date', endDate, index)}
+								bind:date={eduEndDate}
+								id={`eduEndDate-${index}`}
+								on:dateChange={updateEducationDetails('end_date', eduEndDate, index)}
 							/>
+							{#if fieldError?.[index]?.end_date}<p class="error">{fieldError?.[index]?.end_date}</p>{/if}
 						</label>
 					</div>
 					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -142,38 +154,44 @@
 							<h5 class="text-sm tracking-wider">City</h5>
 							<input
 								name="city"
-								id="city"
+								id={`city-${index}`}
 								bind:value={edu.city}
 								on:input={() => updateEducationDetails('city', edu.city, index)}
+								on:blur={validateForm('city', edu.city, 'education', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.city}<p class="error">{fieldError?.[index]?.city}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Country</h5>
 							<input
 								name="country"
-								id="country"
+								id={`country-${index}`}
 								bind:value={edu.country}
 								on:input={() => updateEducationDetails('country', edu.country, index)}
+								on:blur={validateForm('country', edu.country, 'education', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.country}<p class="error">{fieldError?.[index]?.country}</p>{/if}
 						</label>
 					</div>
 					<label class="label">
 						<span class="text-sm tracking-wider">Description</span>
 						<textarea
 							name="description"
-							id="description"
+							id={`description-${index}`}
 							bind:value={edu.description}
 							on:input={() => updateEducationDetails('description', edu.description, index)}
+							on:blur={validateForm('description', edu.description, 'education', 'array', index)}
 							class="textarea rounded-sm border-0 border-s-4 tracking-wider"
 							rows="4"
 							placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
 						/>
+						{#if fieldError?.[index]?.description}<p class="error">{fieldError?.[index]?.description}</p>{/if}
 					</label>
 				</svelte:fragment>
 			</AccordionItem>

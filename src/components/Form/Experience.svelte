@@ -3,10 +3,13 @@
 	import { experienceData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
 	import DatePicker from '../DatePicker.svelte';
+	import { errors } from '../../store/store.js';
+	import { validateForm } from '$lib/validation/validation.js';
 
 	let experience = $experienceData;
 	let startDate = new Date();
 	let endDate = new Date();
+	let fieldError = $errors.experience;
 
 	function add() {
 		// experience.data = experience.data.concat({
@@ -39,9 +42,12 @@
 		// experience.experience_heading = title;
 		experienceData.update((data) => ({
 			...data,
-			experience_heading: title
+			experience_heading: title,
+			start_date: startDate,
+			end_date: endDate
 		}));
 		experience = $experienceData;
+		fieldError = $errors.experience;
 	}
 
 	const updateExperienceDetails = (field, value, index = 0) => {
@@ -96,25 +102,29 @@
 							<h5 class="text-sm tracking-wider">Job Title</h5>
 							<input
 								name="job_title"
-								id="job_title"
+								id={`job_title-${index}`}
 								bind:value={exp.job_title}
 								on:input={() => updateExperienceDetails('job_title', exp.job_title, index)}
+								on:blur={validateForm('job_title', exp.job_title, 'experience', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.job_title}<p class="error">{fieldError?.[index]?.job_title}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Employer</h5>
 							<input
 								name="employer"
-								id="employer"
+								id={`employer-${index}`}
 								bind:value={exp.employer}
 								on:input={() => updateExperienceDetails('employer', exp.employer, index)}
+								on:blur={validateForm('employer', exp.employer, 'experience', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.employer}<p class="error">{fieldError?.[index]?.employer}</p>{/if}
 						</label>
 					</div>
 					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -122,17 +132,19 @@
 							<h5 class="text-sm tracking-wider">Start Date</h5>
 							<DatePicker
 								bind:date={startDate}
-								id="expStartDate"
+								id={`expStartDate-${index}`}
 								on:dateChange={updateExperienceDetails('start_date', startDate, index)}
 							/>
+							{#if fieldError?.[index]?.start_date}<p class="error">{fieldError?.[index]?.start_date}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">End Date</h5>
 							<DatePicker
 								bind:date={endDate}
-								id="expEndDate"
+								id={`expEndDate-${index}`}
 								on:dateChange={updateExperienceDetails('end_date', endDate, index)}
 							/>
+							{#if fieldError?.[index]?.end_date}<p class="error">{fieldError?.[index]?.end_date}</p>{/if}
 						</label>
 					</div>
 					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -140,38 +152,44 @@
 							<h5 class="text-sm tracking-wider">City</h5>
 							<input
 								name="city"
-								id="city"
+								id={`city-${index}`}
 								bind:value={exp.city}
 								on:input={() => updateExperienceDetails('city', exp.city, index)}
+								on:blur={validateForm('city', exp.city, 'experience', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.city}<p class="error">{fieldError?.[index]?.city}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Country</h5>
 							<input
 								name="country"
-								id="country"
+								id={`country-${index}`}
 								bind:value={exp.country}
 								on:input={() => updateExperienceDetails('country', exp.country, index)}
+								on:blur={validateForm('country', exp.country, 'experience', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.country}<p class="error">{fieldError?.[index]?.country}</p>{/if}
 						</label>
 					</div>
 					<label class="label">
 						<span class="text-sm tracking-wider">Description</span>
 						<textarea
 							name="description"
-							id="description"
+							id={`description-${index}`}
 							bind:value={exp.description}
 							on:input={() => updateExperienceDetails('description', exp.description, index)}
+							on:blur={validateForm('description', exp.description, 'experience', 'array', index)}
 							class="textarea rounded-sm border-0 border-s-4 tracking-wider"
 							rows="4"
 							placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
 						/>
+						{#if fieldError?.[index]?.description}<p class="error">{fieldError?.[index]?.description}</p>{/if}
 					</label>
 				</svelte:fragment>
 			</AccordionItem>
