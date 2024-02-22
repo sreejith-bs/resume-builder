@@ -2,6 +2,8 @@
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import { certificateData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
+	import { errors } from '../../store/store.js';
+	import { validateForm } from '$lib/validation/validation.js';
 
 	let certificate = $certificateData;
 

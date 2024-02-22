@@ -136,7 +136,7 @@ export async function POST() {
       ],
       "language": [
         {
-          "language": "English",
+          "label": "English",
           "rating": 5,
           "is_active": true
         },
@@ -234,7 +234,7 @@ export async function POST() {
           }),
           language: e.for(e.json_array_unpack(item.language), (langItem) => {
             return e.insert(e.Language, {
-              language: e.cast(e.str, langItem.language),
+              label: e.cast(e.str, langItem.label),
               rating: e.cast(e.int64, langItem.rating),
               is_active: e.cast(e.bool, langItem.is_active)
             });

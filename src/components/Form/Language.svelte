@@ -56,7 +56,7 @@
 					<div class="flex flex-row">
 						<div class="basis-1/6">
 							<h4 class="font-bold tracking-wider">
-								{lang.language ? lang.language : '(Not Specified)'}
+								{lang.label ? lang.label : '(Not Specified)'}
 							</h4>
 						</div>
 						<div>
@@ -77,8 +77,8 @@
 							<input
 								name="language"
 								id="language"
-								bind:value={lang.language}
-								on:input={() => updateLanguageDetails('language', lang.language, index)}
+								bind:value={lang.label}
+								on:input={() => updateLanguageDetails('language', lang.label, index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."

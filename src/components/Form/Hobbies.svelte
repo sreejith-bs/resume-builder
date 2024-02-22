@@ -33,8 +33,8 @@
 		<textarea
 			name="hobbies"
 			id="hobbies"
-			bind:value={hobbies.hobbies}
-			on:input={() => updateHobbiesDetails('hobbies', hobbies.hobbies)}
+			bind:value={hobbies.label}
+			on:input={() => updateHobbiesDetails('hobbies', hobbies.label)}
 			class="textarea rounded-sm border-0 border-s-4 tracking-wider"
 			rows="4"
 			placeholder="e.g. Drawing, Cricket, Reading"

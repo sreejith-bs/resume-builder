@@ -13,6 +13,12 @@
 			profile_heading: title
 		}));
 	}
+	const updateProfileDetails = (field, value) => {
+		profileData.update((data) => ({
+			...data,
+			[field]: value
+		}));
+	};
 </script>
 
 <div id="profile">
@@ -29,6 +35,7 @@
 			name="profile_description"
 			id="profile_description"
 			bind:value={profile.profile_description}
+			on:input={()=> updateProfileDetails('profile_description', profile.profile_description)}
 			class="textarea tracking-wider rounded-sm border-0 border-s-4"
 			rows="4"
 			placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
