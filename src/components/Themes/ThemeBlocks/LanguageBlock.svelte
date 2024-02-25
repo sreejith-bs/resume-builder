@@ -1,7 +1,7 @@
 <div>
-    <h4 class="h4 py-2">Language</h4>
+    <h3 class="h3 font-bold py-2">Language</h3>
     <hr />
-    <ul class="py-2">
+    <ul class="pt-2">
         <li>Malayalam</li>
         <li>English</li>
     </ul>

@@ -1,5 +1,5 @@
 <div>
-	<h4 class="h4 py-2">Profile</h4>
+	<h3 class="h3 font-bold py-2">Profile</h3>
     <hr />
 	<p class="py-2">
 		Expertise in developing and Modifying frontend of web applications for 2+ years by using
