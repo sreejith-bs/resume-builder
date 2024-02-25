@@ -2,8 +2,12 @@
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import { languageData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
+	import { errors } from '../../store/store.js';
+	import { validateForm } from '$lib/validation/validation.js';
 
 	let language = $languageData;
+	let fieldError = $errors.language;
+
 	function add() {
 		// language.data = language.data.concat({
 		// 	language: '',
@@ -33,6 +37,7 @@
 			language_heading: title
 		}));
 		language = $languageData;
+		fieldError = $errors.language;
 	}
 
 	const updateLanguageDetails = (field, value, index = 0) => {
@@ -76,25 +81,29 @@
 							<h5 class="text-sm tracking-wider">Language</h5>
 							<input
 								name="language"
-								id="language"
+								id={`language-${index}`}
 								bind:value={lang.label}
 								on:input={() => updateLanguageDetails('language', lang.label, index)}
+								on:blur={validateForm('label', lang.label, 'language', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.label}<p class="error">{fieldError?.[index]?.label}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Level</h5>
 							<input
 								name="rating"
-								id="rating"
+								id={`rating-${index}`}
 								bind:value={lang.rating}
 								on:input={() => updateLanguageDetails('rating', lang.rating, index)}
+								on:blur={validateForm('rating', lang.rating, 'language', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
-								type="text"
+								type="number"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.rating}<p class="error">{fieldError?.[index]?.rating}</p>{/if}
 						</label>
 					</div>
 				</svelte:fragment>

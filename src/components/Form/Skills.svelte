@@ -2,8 +2,11 @@
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import { skillsData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
+	import { errors } from '../../store/store.js';
+	import { validateForm } from '$lib/validation/validation.js';
 
 	let skills = $skillsData;
+	let fieldError = $errors.skills;
 
 	function add() {
 		// skills.data = skills.data.concat({
@@ -40,6 +43,7 @@
 			skills_heading: title
 		}));
 		skills = $skillsData;
+		fieldError = $errors.skills;
 	}
 </script>
 
@@ -76,25 +80,29 @@
 							<h5 class="text-sm tracking-wider">Skill</h5>
 							<input
 								name="label"
-								id="label"
+								id={`label-${index}`}
 								bind:value={skil.label}
 								on:input={() => updateSkillDetails('label', skil.label, index)}
+								on:blur={validateForm('label', skil.label, 'skills', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.label}<p class="error">{fieldError?.[index]?.label}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Level</h5>
 							<input
 								name="rating"
-								id="rating"
+								id={`rating-${index}`}
 								bind:value={skil.rating}
 								on:input={() => updateSkillDetails('rating', skil.rating, index)}
+								on:blur={validateForm('rating', skil.rating, 'skills', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
-								type="text"
+								type="number"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.rating}<p class="error">{fieldError?.[index]?.rating}</p>{/if}
 						</label>
 					</div>
 				</svelte:fragment>

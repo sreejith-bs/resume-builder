@@ -1,6 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { createClient } from "edgedb";
 import e from "../../../../dbschema/edgeql-js";
+import { createSuccessResponse, createErrorResponse } from "../apiUtils"
 
 const client = createClient();
 
@@ -40,6 +41,17 @@ export async function GET(event) {
 
         filter_single: { id: user_id }
     })).run(client)
+    return json(createSuccessResponse({ event: { responseBody } }));
+}
 
-    return json(responseBody);
+export async function DELETE(userId) {
+    console.log('userId', userId);
+    let { params } = userId
+    console.log('params', params);
+    let query = e.delete(e.UserDetails, () => ({
+        filter_single: { id: params.user_id }
+    }))
+    const result = await query.run(client)
+    return json(createSuccessResponse({ event: { result } }));
+    // return new Response(JSON.stringify(result))
 }

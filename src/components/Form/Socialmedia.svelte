@@ -2,8 +2,11 @@
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import Title from '../../components/Form/Title.svelte';
 	import { socialMediaData } from '../../store/store.js';
+	import { errors } from '../../store/store.js';
+	import { validateForm } from '$lib/validation/validation.js';
 
-	let social_media = $socialMediaData
+	let social_media = $socialMediaData;
+	let fieldError = $errors.social_media;
 	function add() {
 		// social_media.data = social_media.data.concat({
 		// 	label: '',
@@ -33,6 +36,7 @@
 			social_media_heading: title
 		}));
 		social_media = $socialMediaData
+		fieldError = $errors.social_media;
 	}
 	const updateSocialMediaDetails = (field, value, index = 0) => {
 		socialMediaData.update((data) => {
@@ -75,25 +79,29 @@
 							<h5 class="text-sm tracking-wider">Label</h5>
 							<input
 								name="label"
-								id="label"
+								id={`label-${index}`}
 								bind:value={soc.label}
 								on:input={() => updateSocialMediaDetails('label', soc.label, index)}
+								on:blur={validateForm('label', soc.label, 'social_media', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.label}<p class="error">{fieldError?.[index]?.label}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Url</h5>
 							<input
 								name="url"
-								id="url"
+								id={`url-${index}`}
 								bind:value={soc.url}
 								on:input={() => updateSocialMediaDetails('url', soc.url, index)}
+								on:blur={validateForm('url', soc.url, 'social_media', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
+							{#if fieldError?.[index]?.url}<p class="error">{fieldError?.[index]?.url}</p>{/if}
 						</label>
 					</div>
 				</svelte:fragment>

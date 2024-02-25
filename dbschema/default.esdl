@@ -1,12 +1,15 @@
 module default {
  type UserDetails {
+       theme: str;
        job_title: str;
        first_name: str;
        last_name: str;
        email: str;
        phone: str;
-       dob: cal::local_datetime;
+       dob: str;
        profile_description: str;
+       user_details_heading: str;
+       profile_heading: str;
        experience_heading: str;
        education_heading: str;
        certificate_heading: str;
@@ -14,15 +17,30 @@ module default {
        skills_heading: str;
        language_heading: str;
        hobbies_heading: str;
-       reference_heading: str;
-       address: Address;
-       multi certificate: Certificate;
-       multi experience: Experience;
-       multi education: Education;
-       multi social_media: SocialMedia;
-       multi skills: Skills;
-       multi language: Language;
-       multi hobbies: Hobbies;
+       address: Address {
+        on source delete delete target
+       }
+       multi certificate: Certificate {
+        on source delete delete target
+       }
+       multi experience: Experience {
+        on source delete delete target
+       }
+       multi education: Education {
+        on source delete delete target
+       }
+       multi social_media: SocialMedia {
+        on source delete delete target
+       }
+       multi skills: Skills {
+        on source delete delete target
+       }
+       multi language: Language {
+        on source delete delete target
+       }
+       multi hobbies: Hobbies {
+        on source delete delete target
+       }
    }
    type Address {
        address: str;
@@ -37,8 +55,8 @@ module default {
    type Experience {
        job_title: str;
        employer: str;
-       start_date: cal::local_datetime;
-       end_date: cal::local_datetime;
+       start_date: str;
+       end_date: str;
        city: str;
        country: str;
        description: str;
@@ -48,8 +66,8 @@ module default {
    type Education {
        course: str;
        institution: str;
-       start_date: cal::local_datetime;
-       end_date: cal::local_datetime;
+       start_date: str;
+       end_date: str;
        city: str;
        country: str;
        description: str;
@@ -59,6 +77,7 @@ module default {
    type Certificate {
     label: str;
     url: str;
+    required is_active: bool;
    }
    type SocialMedia {
        label: str;
@@ -71,12 +90,12 @@ module default {
        required is_active: bool;
    }
    type Language {
-       language: str;
+       label: str;
        rating: int64;
        required is_active: bool;
    }
    type Hobbies {
-       hobbies: str;
+       label: str;
        required is_active: bool;
    }
 }

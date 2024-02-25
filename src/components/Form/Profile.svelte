@@ -1,8 +1,11 @@
 <script>
 	import Title from '../../components/Form/Title.svelte';
 	import { profileData } from '../../store/store.js';
+	import { errors } from '../../store/store.js';
+	import { validateForm } from '$lib/validation/validation.js';
 
 	let profile = $profileData
+	let fieldError = $errors;
 
 	let defaultTitle = 'My Profile';
 	let title = profile.profile_heading ? profile.profile_heading : defaultTitle;
@@ -12,6 +15,8 @@
 			...data,
 			profile_heading: title
 		}));
+		fieldError = $errors;
+		profile = $profileData
 	}
 	const updateProfileDetails = (field, value) => {
 		profileData.update((data) => ({
@@ -36,9 +41,11 @@
 			id="profile_description"
 			bind:value={profile.profile_description}
 			on:input={()=> updateProfileDetails('profile_description', profile.profile_description)}
+			on:blur={validateForm('profile_description', profile.profile_description)}
 			class="textarea tracking-wider rounded-sm border-0 border-s-4"
 			rows="4"
 			placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
 		/>
+		{#if fieldError?.profile_description}<p class="error">{fieldError?.profile_description}</p>{/if}
 	</label>
 </div>

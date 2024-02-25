@@ -14,10 +14,11 @@
 		// address.dob = date;
 		userDetailsData.update((data) => ({
 			...data,
-			dob
+			dob: new Date(dob)
 		}));
 		// console.log('address', address);
 		fieldError = $errors;
+		address = $addressData;
 	}
 
 	const updateAddressDetails = (field, value, dataType) => {
@@ -69,7 +70,9 @@
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.postal_code}<p class="error">{fieldError.address?.postal_code}</p>{/if}
+						{#if fieldError.address?.postal_code}<p class="error">
+								{fieldError.address?.postal_code}
+							</p>{/if}
 					</label>
 				</div>
 				<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -79,13 +82,21 @@
 							name="driving_license"
 							id="driving_license"
 							bind:value={address.driving_license}
-							on:input={() => updateAddressDetails('driving_license', address.driving_license, 'address')}
-							on:blur={validateForm('driving_license', address.driving_license, 'address', 'nested')}
+							on:input={() =>
+								updateAddressDetails('driving_license', address.driving_license, 'address')}
+							on:blur={validateForm(
+								'driving_license',
+								address.driving_license,
+								'address',
+								'nested'
+							)}
 							class="input rounded-sm border-0 border-s-4 tracking-wider"
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.driving_license}<p class="error">{fieldError.address?.driving_license}</p>{/if}
+						{#if fieldError.address?.driving_license}<p class="error">
+								{fieldError.address?.driving_license}
+							</p>{/if}
 					</label>
 					<label class="label">
 						<h5 class="text-sm tracking-wider">Nationality</h5>
@@ -99,7 +110,9 @@
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.nationality}<p class="error">{fieldError.address?.nationality}</p>{/if}
+						{#if fieldError.address?.nationality}<p class="error">
+								{fieldError.address?.nationality}
+							</p>{/if}
 					</label>
 				</div>
 				<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -109,22 +122,25 @@
 							name="place_of_birth"
 							id="place_of_birth"
 							bind:value={address.place_of_birth}
-							on:input={() => updateAddressDetails('place_of_birth', address.place_of_birth, 'address')}
+							on:input={() =>
+								updateAddressDetails('place_of_birth', address.place_of_birth, 'address')}
 							on:blur={validateForm('place_of_birth', address.place_of_birth, 'address', 'nested')}
 							class="input rounded-sm border-0 border-s-4 tracking-wider"
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.place_of_birth}<p class="error">{fieldError.address?.place_of_birth}</p>{/if}
+						{#if fieldError.address?.place_of_birth}<p class="error">
+								{fieldError.address?.place_of_birth}
+							</p>{/if}
 					</label>
 					<label class="label">
 						<h5 class="text-sm tracking-wider">Date Of Birth</h5>
 						<DatePicker
-								bind:date={dob}
-								id="dob"
-								on:dateChange={updateAddressDetails('dob', dob, 'user')}
-							/>
-							{#if fieldError.dob}<p class="error">{fieldError.dob}</p>{/if}
+							bind:date={dob}
+							id="dob"
+							on:dateChange={updateAddressDetails('dob', dob, 'user')}
+						/>
+						{#if fieldError.dob}<p class="error">{fieldError.dob}</p>{/if}
 					</label>
 				</div>
 			</svelte:fragment>

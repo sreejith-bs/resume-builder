@@ -1,4 +1,6 @@
 <script>
-    import ResumeList from "../../../components/ResumeList.svelte";
+    // import ResumeList from "../../../components/ResumeList.svelte";
+    import LandingPage from "../../../components/LandingPage.svelte";
 </script>
-<ResumeList/>
+<!-- <ResumeList/> -->
+<LandingPage selectedTab={1}/>

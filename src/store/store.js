@@ -1,6 +1,7 @@
 import { derived, writable } from 'svelte/store';
 
 const userDetailsData = writable({
+    theme: '',
     user_details_heading: '',
     job_title: '',
     first_name: '',
@@ -21,7 +22,8 @@ const addressData = writable({
 });
 const profileData = writable({
     profile_heading: '',
-    profile_description: ''
+    profile_description: '',
+    is_active: true
 });
 const experienceData = writable({
     experience_heading: '',
@@ -55,6 +57,8 @@ const hobbiesData = writable({
 
 const errors = writable({});
 
+const resumeDetails = writable([]);
+
 const form = derived(
     [userDetailsData,
         addressData,
@@ -76,6 +80,7 @@ const form = derived(
         $skillsData,
         $languageData,
         $hobbiesData]) => ({
+            theme: $userDetailsData.theme,
             user_details_heading: $userDetailsData.user_details_heading,
             profile_heading: $profileData.profile_heading,
             experience_heading: $experienceData.experience_heading,
@@ -91,7 +96,7 @@ const form = derived(
             last_name: $userDetailsData.last_name,
             email: $userDetailsData.email,
             phone: $userDetailsData.phone,
-            dob: $userDetailsData.dob,
+            dob: new Date($userDetailsData.dob),
             address: {
                 address: $addressData.address,
                 postal_code: $addressData.postal_code,
@@ -102,22 +107,27 @@ const form = derived(
                 city: $addressData.city,
                 is_active: $addressData.is_active
             },
+            hobbies: {
+                label: $hobbiesData.label,
+                is_active: $hobbiesData.is_active
+            },
             experience: $experienceData.data,
             education: $educationData.data,
             certificate: $certificateData.data,
             social_media: $socialMediaData.data,
             skills: $skillsData.data,
-            language: $languageData.data,
-            hobbies: {
-                label: $hobbiesData.label,
-                is_active: $hobbiesData.is_active
-            }
+            language: $languageData.data
         })
 )
 
-const unsubscribe = errors.subscribe(newValue => {
-    console.log('Store updated:', newValue);
-});
+function updateResumeDetails(data) {
+    console.log('dapdate-details', data);
+    resumeDetails.set(data)
+}
+
+// const unsubscribe = resumedetails.subscribe(newValue => {
+//     console.log('Store updated:', newValue);
+// });
 
 export {
     userDetailsData,
@@ -131,5 +141,7 @@ export {
     languageData,
     hobbiesData,
     errors,
-    form
+    form,
+    resumeDetails,
+    updateResumeDetails
 }

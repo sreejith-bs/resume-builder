@@ -63,7 +63,6 @@ export function validateField(formData, validationRules) {
     return errorObject;
 }
 export function validateForm(field, value, parentKey = '', type = 'object', index = 0) {
-    // console.log('parentKey', parentKey);
     let formData;
     if (type === 'object') {
         formData = {
@@ -83,7 +82,6 @@ export function validateForm(field, value, parentKey = '', type = 'object', inde
         formData[parentKey][index] = { [field]: value }
     }
     let fieldError = validateField(formData, validationRules);
-    // console.log('fieldError', fieldError);
     errors.update((data) => {
         if (Object.keys(fieldError).length === 0) {
             // If fieldError is an empty object, remove the corresponding field from errors
@@ -97,7 +95,6 @@ export function validateForm(field, value, parentKey = '', type = 'object', inde
                     }
                 }
             } else if (type === 'array') {
-                console.log('inside-array')
                 if (updatedErrors[parentKey]?.[index] && updatedErrors[parentKey]?.[index]?.[field]) {
                     delete updatedErrors[parentKey][index][field];
                     // Check if the child array is empty after deleting the field
@@ -114,7 +111,6 @@ export function validateForm(field, value, parentKey = '', type = 'object', inde
                 // Handle non-nested objects
                 delete updatedErrors[field];
             }
-            console.log('updatedErrors', updatedErrors)
             return updatedErrors;
         } else if (type === 'nested' && data[parentKey]) {
             const updatedErrors = { ...data };
@@ -126,10 +122,7 @@ export function validateForm(field, value, parentKey = '', type = 'object', inde
             return updatedErrors;
         }
         else {
-            console.log('data', data, 'fieldError', fieldError)
-            let x = { ...data, ...fieldError };
-            console.log('x', x);
-            return x;
+            return { ...data, ...fieldError };
         }
     });
 };

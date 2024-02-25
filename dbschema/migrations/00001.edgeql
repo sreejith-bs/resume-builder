@@ -1,4 +1,4 @@
-CREATE MIGRATION m1sbqw7db4wcqs2ny2s6gsqir577txsypfsdavotsb5573mtl2o6cq
+CREATE MIGRATION m1b2vwlgwnpqha4gpungywphrb4un5gkgcyojrihjkf65euj6y57ea
     ONTO initial
 {
   CREATE TYPE default::Address {
@@ -12,6 +12,7 @@ CREATE MIGRATION m1sbqw7db4wcqs2ny2s6gsqir577txsypfsdavotsb5573mtl2o6cq
       CREATE PROPERTY postal_code: std::str;
   };
   CREATE TYPE default::Certificate {
+      CREATE REQUIRED PROPERTY is_active: std::bool;
       CREATE PROPERTY label: std::str;
       CREATE PROPERTY url: std::str;
   };
@@ -38,12 +39,12 @@ CREATE MIGRATION m1sbqw7db4wcqs2ny2s6gsqir577txsypfsdavotsb5573mtl2o6cq
       CREATE PROPERTY start_date: cal::local_datetime;
   };
   CREATE TYPE default::Hobbies {
-      CREATE PROPERTY hobbies: std::str;
       CREATE REQUIRED PROPERTY is_active: std::bool;
+      CREATE PROPERTY label: std::str;
   };
   CREATE TYPE default::Language {
       CREATE REQUIRED PROPERTY is_active: std::bool;
-      CREATE PROPERTY language: std::str;
+      CREATE PROPERTY label: std::str;
       CREATE PROPERTY rating: std::int64;
   };
   CREATE TYPE default::Skills {
@@ -57,14 +58,30 @@ CREATE MIGRATION m1sbqw7db4wcqs2ny2s6gsqir577txsypfsdavotsb5573mtl2o6cq
       CREATE PROPERTY url: std::str;
   };
   CREATE TYPE default::UserDetails {
-      CREATE LINK address: default::Address;
-      CREATE MULTI LINK certificate: default::Certificate;
-      CREATE MULTI LINK education: default::Education;
-      CREATE MULTI LINK experience: default::Experience;
-      CREATE MULTI LINK hobbies: default::Hobbies;
-      CREATE MULTI LINK language: default::Language;
-      CREATE MULTI LINK skills: default::Skills;
-      CREATE MULTI LINK social_media: default::SocialMedia;
+      CREATE LINK address: default::Address {
+          ON SOURCE DELETE DELETE TARGET;
+      };
+      CREATE MULTI LINK certificate: default::Certificate {
+          ON SOURCE DELETE DELETE TARGET;
+      };
+      CREATE MULTI LINK education: default::Education {
+          ON SOURCE DELETE DELETE TARGET;
+      };
+      CREATE MULTI LINK experience: default::Experience {
+          ON SOURCE DELETE DELETE TARGET;
+      };
+      CREATE MULTI LINK hobbies: default::Hobbies {
+          ON SOURCE DELETE DELETE TARGET;
+      };
+      CREATE MULTI LINK language: default::Language {
+          ON SOURCE DELETE DELETE TARGET;
+      };
+      CREATE MULTI LINK skills: default::Skills {
+          ON SOURCE DELETE DELETE TARGET;
+      };
+      CREATE MULTI LINK social_media: default::SocialMedia {
+          ON SOURCE DELETE DELETE TARGET;
+      };
       CREATE PROPERTY certificate_heading: std::str;
       CREATE PROPERTY dob: cal::local_datetime;
       CREATE PROPERTY education_heading: std::str;
@@ -77,8 +94,10 @@ CREATE MIGRATION m1sbqw7db4wcqs2ny2s6gsqir577txsypfsdavotsb5573mtl2o6cq
       CREATE PROPERTY last_name: std::str;
       CREATE PROPERTY phone: std::str;
       CREATE PROPERTY profile_description: std::str;
-      CREATE PROPERTY reference_heading: std::str;
+      CREATE PROPERTY profile_heading: std::str;
       CREATE PROPERTY skills_heading: std::str;
       CREATE PROPERTY social_media_heading: std::str;
+      CREATE PROPERTY theme: std::str;
+      CREATE PROPERTY user_details_heading: std::str;
   };
 };

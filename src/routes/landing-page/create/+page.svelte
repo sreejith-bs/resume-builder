@@ -1,4 +1,4 @@
 <script>
     import LandingPage from "../../../components/LandingPage.svelte";
 </script>
-<LandingPage/>
+<LandingPage selectedTab={0}/>

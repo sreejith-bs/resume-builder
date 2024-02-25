@@ -18,6 +18,8 @@
 			user_details_heading: title
 		}));
 		fieldError = $errors;
+		userDetails = $userDetailsData;
+		addressDetails = $addressData;
 	}
 	const updateUserDetails = (field, value, dataType) => {
 		if (dataType === 'user')
@@ -46,7 +48,7 @@
 				id="job_title"
 				bind:value={userDetails.job_title}
 				on:input={() => updateUserDetails('job_title', userDetails.job_title, 'user')}
-				on:blur={validateForm('job_title', userDetails.first_name)}
+				on:blur={validateForm('job_title', userDetails.job_title)}
 				class="input rounded-sm border-0 border-s-4 tracking-wider"
 				type="text"
 				placeholder="e.g. Software Engineer"
