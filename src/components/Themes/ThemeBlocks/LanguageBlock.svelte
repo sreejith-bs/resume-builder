@@ -1,8 +1,13 @@
+<script>
+	export let details;
+</script>
+
 <div>
-    <h3 class="h3 font-bold py-2">Language</h3>
-    <hr />
-    <ul class="pt-2">
-        <li>Malayalam</li>
-        <li>English</li>
-    </ul>
+	<h3 class="h3 py-2 font-bold">{details.language_heading}</h3>
+	<hr />
+	<ul class="pt-2">
+		{#each details.language as item}
+			<li>{item.label}</li>
+		{/each}
+	</ul>
 </div>

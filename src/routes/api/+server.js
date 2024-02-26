@@ -26,6 +26,7 @@ export async function GET() {
   let responseBody = await e.select(
     e.UserDetails, () => ({
       id: true,
+      theme: true,
       job_title: true,
       first_name: true,
       last_name: true,
@@ -46,20 +47,20 @@ export async function POST(data) {
   try {
     let formData = await data.request.json()
     console.log('FORM-Data+++++', formData);
-    const query1 = e.params({ items: e.json }, (params) => {
+    const query = e.params({ items: e.json }, (params) => {
       return e.for(e.json_array_unpack(params.items), (item) => {
         return e.insert(e.UserDetails, {
-          theme: e.cast(e.str, item.theme), //new field
+          theme: e.cast(e.str, item.theme),
           email: e.cast(e.str, item.email),
           job_title: e.cast(e.str, item.job_title),
           first_name: e.cast(e.str, item.first_name),
           last_name: e.cast(e.str, item.last_name),
           phone: e.cast(e.str, item.phone),
-          dob: e.cast(e.str, item.dob),
+          date_of_birth: e.cast(e.str, item.date_of_birth),
           profile_description: e.cast(e.str, item.profile_description),
           experience_heading: e.cast(e.str, item.experience_heading),
-          user_details_heading: e.cast(e.str, item.user_details_heading), //new field
-          profile_heading: e.cast(e.str, item.profile_heading), //new field
+          user_details_heading: e.cast(e.str, item.user_details_heading),
+          profile_heading: e.cast(e.str, item.profile_heading),
           education_heading: e.cast(e.str, item.education_heading),
           certificate_heading: e.cast(e.str, item.certificate_heading),
           social_media_heading: e.cast(e.str, item.social_media_heading),
@@ -110,7 +111,7 @@ export async function POST(data) {
             return e.insert(e.Certificate, {
               label: e.cast(e.str, cerItem.label),
               url: e.cast(e.str, cerItem.url),
-              is_active: e.cast(e.bool, cerItem.is_active) //new field
+              is_active: e.cast(e.bool, cerItem.is_active)
             });
           }),
           social_media: e.for(e.json_array_unpack(item.social_media), (socItem) => {
@@ -137,12 +138,15 @@ export async function POST(data) {
         });
       });
     });
-
-    const result = await query1.run(client, {
+    console.log('query*************', query);
+    const responseBody = await query.run(client, {
       items: [formData]
     });
-    console.log('result************', result)
-    return new Response(JSON.stringify(result))
+    // console.log('result************', responseBody)
+    // let x = json(createSuccessResponse({ event: { responseBody } }));
+    // return x; 
+    return new Response(JSON.stringify(responseBody))
+    // return json(createSuccessResponse({ event: { responseBody } }));
 
   } catch (error) {
     console.log('error', error)
@@ -161,7 +165,7 @@ export async function POST(data) {
 //             job_title := <str>item['job_title'],
 //             first_name := <str>item['first_name'],
 //             last_name := <str>item['last_name'],
-//             dob := <cal::local_datetime>item['dob'],
+//             date_of_birth := <cal::local_datetime>item['date_of_birth'],
 //             profile_description := <str>item['profile_description'],
 //             experience_heading := <str>item['experience_heading'],
 //             education_heading := <str>item['education_heading'],
@@ -275,7 +279,7 @@ export async function POST(data) {
 //   "last_name": "Doe",
 //   "email": "sree@example.com",
 //   "phone": "+1234567890",
-//   "dob": "2018-05-07T15:01:22",
+//   "date_of_birth": "2018-05-07T15:01:22",
 //   "profile_description": "Experienced software engineer with expertise in...",
 //   "experience_heading": "Experience",
 //   "education_heading": "Education",

@@ -5,6 +5,7 @@
 	import DatePicker from '../DatePicker.svelte';
 	import { errors } from '../../store/store.js';
 	import { validateForm } from '$lib/validation/validation.js';
+	import { formatDate } from '$lib/utils.js';
 
 	let education = $educationData;
 	let eduStartDate = new Date();
@@ -58,14 +59,6 @@
 			return data;
 		});
 	};
-
-	function formatDate(date) {
-		return new Date(date).toLocaleDateString('en-US', {
-			year: 'numeric',
-			month: 'numeric',
-			day: 'numeric'
-		});
-	}
 </script>
 
 <div id="education">

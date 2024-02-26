@@ -4,17 +4,21 @@
 	import DatePicker from '../DatePicker.svelte';
 	import { errors } from '../../store/store.js';
 	import { validateForm } from '$lib/validation/validation.js';
+	import { formatDate } from '$lib/utils.js';
 
 	let address = $addressData;
 	let userDetails = $userDetailsData;
-	let dob = new Date();
+	let dateOfBirth = new Date();
+	// let date_of_birth;
 	let fieldError = $errors;
 
 	$: {
-		// address.dob = date;
+		// address.date_of_birth = date;
+		// date_of_birth = new Date(dateOfBirth).toLocaleDateString()
+		 
 		userDetailsData.update((data) => ({
 			...data,
-			dob: new Date(dob)
+			date_of_birth : dateOfBirth
 		}));
 		// console.log('address', address);
 		fieldError = $errors;
@@ -136,11 +140,11 @@
 					<label class="label">
 						<h5 class="text-sm tracking-wider">Date Of Birth</h5>
 						<DatePicker
-							bind:date={dob}
-							id="dob"
-							on:dateChange={updateAddressDetails('dob', dob, 'user')}
+							bind:date={dateOfBirth}
+							id="date_of_birth"
+							on:dateChange={updateAddressDetails('date_of_birth', dateOfBirth, 'user')}
 						/>
-						{#if fieldError.dob}<p class="error">{fieldError.dob}</p>{/if}
+						{#if fieldError.date_of_birth}<p class="error">{fieldError.date_of_birth}</p>{/if}
 					</label>
 				</div>
 			</svelte:fragment>

@@ -1,8 +1,8 @@
+<script>
+    export let details;
+</script>
 <div>
-    <h3 class="h3 font-bold py-2">Hobbies</h3>
+    <h3 class="h3 font-bold py-2">{details.hobbies_heading}</h3>
     <hr />
-    <ul class="pt-2">
-        <li>Reading</li>
-        <li>Drawing</li>
-    </ul>
+    <p class="pt-2">{details.hobbies.label}</p>
 </div>

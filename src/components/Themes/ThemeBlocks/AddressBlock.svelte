@@ -1,10 +1,13 @@
+<script>
+	export let details;
+</script>
 <div>
 	<h3 class="h3 font-bold py-2">Details</h3>
 	<hr />
 	<div>
 		<div class="pt-2">
-			<p>Bhavanimandhiram, Onthupacha, Dally P.O, Kulathupuzha, Kollam, Kerala, India</p>
-			<p>PIN 691310</p>
+			<p>{details.address}, {details.city}, {details.country}</p>
+			<p>PIN {details.postal_code}</p>
 		</div>
 	</div>
 </div>

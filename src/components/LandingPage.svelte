@@ -42,16 +42,16 @@
 		<svelte:fragment slot="panel">
 			{#if tabSet === 0}
 				<div class="grid grid-cols-3 gap-5 pt-5">
-					<a href="/landing-page/form/{'theme-1'}" class="card card-hover block rounded-md">
+					<a href="/landing-page/form/{'theme1'}" class="card card-hover block rounded-md">
 						<!-- <header class="card-header">(header)</header> -->
 						<section class="p-4">Theme 1</section>
 						<footer class="card-footer">Dublin</footer>
 					</a>
-					<a href="/landing-page/form/{'theme-2'}" class="card card-hover rounded-md">
+					<a href="/landing-page/form/{'theme2'}" class="card card-hover rounded-md">
 						<section class="p-4">Theme 2</section>
 						<footer class="card-footer">Madrid</footer>
 					</a>
-					<a href="/landing-page/form/{'theme-3'}" class="card card-hover rounded-md">
+					<a href="/landing-page/form/{'theme3'}" class="card card-hover rounded-md">
 						<section class="p-4">Theme 2</section>
 						<footer class="card-footer">Sydney</footer>
 					</a>

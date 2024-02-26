@@ -4,12 +4,14 @@
 	import { userDetailsData, addressData } from '../../store/store.js';
 	import { errors } from '../../store/store.js';
 	import { validateForm } from '$lib/validation/validation.js';
+	import { writable } from 'svelte/store';
 
 	let userDetails = $userDetailsData;
 	let addressDetails = $addressData;
 	let defaultTitle = 'Personal Details';
 	let title = userDetails.user_details_heading ? userDetails.user_details_heading : defaultTitle;
 	let fieldError = $errors;
+	const imageData = writable(null);
 
 	$: {
 		// userDetails.user_details_heading = title;
@@ -33,6 +35,22 @@
 				[field]: value
 			}));
 	};
+	function handleFileInputChange(event) {
+		const file = event.target.files[0];
+
+		if (file) {
+			const reader = new FileReader();
+
+			// Read the file as a data URL
+			reader.readAsDataURL(file);
+
+			// Handle the onload event when reading is complete
+			reader.onload = () => {
+				// Update the image data store with the data URL
+				imageData.set(reader.result);
+			};
+		}
+	}
 </script>
 
 <div id="personal-details">
@@ -55,11 +73,15 @@
 			/>
 			{#if fieldError.job_title}<p class="error">{fieldError.job_title}</p>{/if}
 		</label>
-		<Avatar
+		<input type="file" accept="image/*" onchange={handleFileInputChange} />
+		{#if $imageData}
+			<img src={$imageData} alt="Uploaded Image" />
+		{/if}
+		<!-- <Avatar
 			src="https://images.unsplash.com/photo-1617296538902-887900d9b592?ixid=M3w0Njc5ODF8MHwxfGFsbHx8fHx8fHx8fDE2ODc5NzExMDB8&ixlib=rb-4.0.3&w=128&h=128&auto=format&fit=crop"
 			width="w-20"
 			rounded="rounded-none"
-		/>
+		/> -->
 	</div>
 	<div class="grid gap-4 md:grid-cols-2 md:gap-10 md:py-3">
 		<label class="label">

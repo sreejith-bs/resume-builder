@@ -62,7 +62,7 @@ export const validationRules = {
         pattern: /^\d{10}$/,
         message: 'Enter a 10-digit phone number'
     },
-    dob: {
+    date_of_birth: {
         required: true,
         message: 'Date of birth is required'
     },

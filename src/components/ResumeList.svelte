@@ -5,7 +5,7 @@
 	import { updateResumeDetails } from '../store/store';
 	import ModalComponentFullScreen from '$lib/modals/ModalFullScreen.svelte';
 	import { navigateTo } from '$lib/utils';
-    import ThemeDublin from './Themes/ThemeDublin.svelte';
+	import ThemeDublin from './Themes/ThemeDublin.svelte';
 
 	// let source = [];
 	const modalStore = getModalStore();
@@ -16,7 +16,8 @@
 	let currentPageItems = [];
 	let loading = false;
 	let deleteFlag = false;
-	let showResumeDetails = false;
+	let baseUrl = '/landing-page/form/';
+	// let previewUrl;
 
 	onMount(() => {
 		loading = true;
@@ -65,31 +66,34 @@
 			console.log('error', error);
 		}
 	};
-	async function viewResume(resumeId) {
-		try {
-			loading = true;
-			const response = await fetch(`/api/${resumeId}`, {
-				method: 'GET',
-				headers: { 'Content-Type': 'application/json' }
+	const getResume = async (resumeId) => {
+		loading = true;
+		const response = await fetch(`/api/${resumeId}`, {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		})
+			.then((response) => {
+				if (response.ok) {
+					loading = false;
+					return response.json();
+				} else {
+					alertMessage('error', 'Oops, something went wrong');
+				}
+			})
+			.then((data) => {
+				resumeDetails = data.data.event?.responseBody;
+				updateResumeDetails(resumeDetails);
+				console.log('resumeDetails', resumeDetails);
+			})
+			.catch((error) => {
+				loading = false;
+				console.error('Error', error);
 			});
-			if (response.status === 200) {
-				loading = false;
-				const result = await response.json();
-				resumeDetails = result.data.event?.responseBody;
-				showResumeDetails = true;
-				// showResume();
-				// showPopup('component', 'modalComponentFullScreen');
-				// source = allResumeDetails;
-				// navigateTo('/landing-page/preview')
-				console.log('details fetched successfully!', resumeDetails);
-			} else {
-				loading = false;
-				console.log('something went wrong!', response);
-			}
-		} catch (error) {
-			loading = false;
-			console.log('viewResume-error', error);
-		}
+	};
+	async function viewResume(resumeId, action) {
+		await getResume(resumeId);
+		if (action === 'view') showPopup('component', 'modalComponentFullScreen');
+		// else previewUrl = `${baseUrl}${resumeDetails.theme}`;
 	}
 	async function deleteResume(resumeId) {
 		try {
@@ -110,7 +114,6 @@
 					allResumeDetails = allResumeDetails.filter((details) => {
 						return details.id !== deletedId;
 					});
-					updateResumeDetails(allResumeDetails);
 					updateCurrentPageItems();
 				}
 			}
@@ -147,10 +150,7 @@
 </script>
 
 <div>
-	{#if showResumeDetails}
-        <!-- <ThemeDublin /> -->
-		<button type="button" class="variant-filled btn btn-sm" on:click={() => showResumeDetails = !showResumeDetails}>Close</button>
-	{:else if currentPageItems.length}
+	{#if currentPageItems.length}
 		<div class="grid grid-cols-4 gap-x-14 py-4">
 			{#each currentPageItems as item}
 				<div
@@ -168,8 +168,19 @@
 						<button type="button" class="variant-filled btn btn-sm" on:click={deleteResume(item.id)}
 							>Delete</button
 						>
-						<button type="button" class="variant-filled btn btn-sm" on:click={()=>{viewResume(item.id), navigateTo('/landing-page/preview')}}
-							>View</button
+						<button
+							type="button"
+							class="variant-filled btn btn-sm"
+							on:click={() => {
+								viewResume(item.id, 'view');
+							}}>View</button
+						>
+						<a href="{baseUrl}{item.theme}/{item.id}"
+							><button
+								type="button"
+								class="variant-filled btn btn-sm"
+								>Edit</button
+							></a
 						>
 					</footer>
 				</div>
@@ -179,7 +190,7 @@
 			<button type="button" class="variant-filled btn" on:click={previousPage}>Previous</button>
 			<button type="button" class="variant-filled btn" on:click={nextPage}>Next</button>
 		</div>
-	{:else if !currentPageItems.length && loading}
+	{:else}
 		<div class="grid h-40 grid-cols-1 gap-x-14 py-4">
 			<div class="flex flex-col items-center justify-center text-center">
 				<h1 class="mb-6 text-3xl font-bold">No Resumies Found</h1>

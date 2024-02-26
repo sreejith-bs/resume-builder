@@ -6,7 +6,7 @@ module default {
        last_name: str;
        email: str;
        phone: str;
-       dob: str;
+       date_of_birth: str;
        profile_description: str;
        user_details_heading: str;
        profile_heading: str;
@@ -38,7 +38,7 @@ module default {
        multi language: Language {
         on source delete delete target
        }
-       multi hobbies: Hobbies {
+       hobbies: Hobbies {
         on source delete delete target
        }
    }

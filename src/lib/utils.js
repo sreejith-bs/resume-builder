@@ -5,4 +5,12 @@ function navigateTo(url) {
     navigate(url); // Update the browser's URL
 }
 
-export {navigateTo}
+function formatDate(date) {
+    return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+    });
+}
+
+export {navigateTo, formatDate}

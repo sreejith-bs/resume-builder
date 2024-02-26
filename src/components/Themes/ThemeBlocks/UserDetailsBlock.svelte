@@ -1,4 +1,7 @@
+<script>
+    export let details;
+</script>
 <div>
-    <p>Phone: 6282361485</p>
-    <p>Email: sree.kpzha@gmail.com</p>
+    <p>Phone: {details.phone}</p>
+    <p>Email: {details.email}</p>
 </div>

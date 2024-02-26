@@ -1,4 +1,5 @@
 export function createResponse(params) {
+    console.log('createResponse', params);
     return {
       ...params
     };

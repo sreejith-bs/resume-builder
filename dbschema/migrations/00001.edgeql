@@ -1,4 +1,4 @@
-CREATE MIGRATION m1b2vwlgwnpqha4gpungywphrb4un5gkgcyojrihjkf65euj6y57ea
+CREATE MIGRATION m1qwk3yy2u446nae5ew4l7iaxw6ewddh2rylrrtat7safklhzejpta
     ONTO initial
 {
   CREATE TYPE default::Address {
@@ -22,10 +22,10 @@ CREATE MIGRATION m1b2vwlgwnpqha4gpungywphrb4un5gkgcyojrihjkf65euj6y57ea
       CREATE PROPERTY course: std::str;
       CREATE PROPERTY current_status: std::bool;
       CREATE PROPERTY description: std::str;
-      CREATE PROPERTY end_date: cal::local_datetime;
+      CREATE PROPERTY end_date: std::str;
       CREATE PROPERTY institution: std::str;
       CREATE REQUIRED PROPERTY is_active: std::bool;
-      CREATE PROPERTY start_date: cal::local_datetime;
+      CREATE PROPERTY start_date: std::str;
   };
   CREATE TYPE default::Experience {
       CREATE PROPERTY city: std::str;
@@ -33,10 +33,10 @@ CREATE MIGRATION m1b2vwlgwnpqha4gpungywphrb4un5gkgcyojrihjkf65euj6y57ea
       CREATE PROPERTY current_status: std::bool;
       CREATE PROPERTY description: std::str;
       CREATE PROPERTY employer: std::str;
-      CREATE PROPERTY end_date: cal::local_datetime;
+      CREATE PROPERTY end_date: std::str;
       CREATE REQUIRED PROPERTY is_active: std::bool;
       CREATE PROPERTY job_title: std::str;
-      CREATE PROPERTY start_date: cal::local_datetime;
+      CREATE PROPERTY start_date: std::str;
   };
   CREATE TYPE default::Hobbies {
       CREATE REQUIRED PROPERTY is_active: std::bool;
@@ -70,7 +70,7 @@ CREATE MIGRATION m1b2vwlgwnpqha4gpungywphrb4un5gkgcyojrihjkf65euj6y57ea
       CREATE MULTI LINK experience: default::Experience {
           ON SOURCE DELETE DELETE TARGET;
       };
-      CREATE MULTI LINK hobbies: default::Hobbies {
+      CREATE LINK hobbies: default::Hobbies {
           ON SOURCE DELETE DELETE TARGET;
       };
       CREATE MULTI LINK language: default::Language {
@@ -83,7 +83,7 @@ CREATE MIGRATION m1b2vwlgwnpqha4gpungywphrb4un5gkgcyojrihjkf65euj6y57ea
           ON SOURCE DELETE DELETE TARGET;
       };
       CREATE PROPERTY certificate_heading: std::str;
-      CREATE PROPERTY dob: cal::local_datetime;
+      CREATE PROPERTY date_of_birth: std::str;
       CREATE PROPERTY education_heading: std::str;
       CREATE PROPERTY email: std::str;
       CREATE PROPERTY experience_heading: std::str;

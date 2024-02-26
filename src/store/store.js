@@ -8,7 +8,7 @@ const userDetailsData = writable({
     last_name: '',
     email: '',
     phone: '',
-    dob: new Date()
+    date_of_birth: ''
 });
 const addressData = writable({
     address: '',
@@ -57,7 +57,7 @@ const hobbiesData = writable({
 
 const errors = writable({});
 
-const resumeDetails = writable([]);
+const resumeDetails = writable({});
 
 const form = derived(
     [userDetailsData,
@@ -96,7 +96,7 @@ const form = derived(
             last_name: $userDetailsData.last_name,
             email: $userDetailsData.email,
             phone: $userDetailsData.phone,
-            dob: new Date($userDetailsData.dob),
+            date_of_birth: $userDetailsData.date_of_birth,
             address: {
                 address: $addressData.address,
                 postal_code: $addressData.postal_code,
@@ -121,9 +121,14 @@ const form = derived(
 )
 
 function updateResumeDetails(data) {
-    console.log('dapdate-details', data);
     resumeDetails.set(data)
 }
+
+// const resumeHeadlineDetails = derived(resumeDetails, ($resumeDetails) => ({
+//     first_name: $resumeDetails.first_name,
+//     last_name: $resumeDetails.last_name,
+//     job_title: $resumeDetails.job_title
+// }))
 
 // const unsubscribe = resumedetails.subscribe(newValue => {
 //     console.log('Store updated:', newValue);

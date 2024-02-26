@@ -1,6 +1,6 @@
 <script>
 	import { getModalStore } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import UserDetails from './UserDetails.svelte';
 	import Address from './Address.svelte';
 	import Profile from './Profile.svelte';
@@ -11,8 +11,10 @@
 	import Skills from './Skills.svelte';
 	import Language from './Language.svelte';
 	import Hobbies from './Hobbies.svelte';
+	import { updateResumeDetails } from '../../store/store';
 	import { validateField } from '$lib/validation/validation.js';
 	import { validationRules } from '$lib/validation/validationRules.js';
+	import { resumeDetails } from '../../store/store';
 	import {
 		userDetailsData,
 		addressData,
@@ -29,118 +31,40 @@
 	} from '../../store/store.js';
 
 	const modalStore = getModalStore();
-
-	let resumeData = {
-		user_details_heading: 'Personal Details',
-		profile_heading: 'My Profile',
-		experience_heading: 'Employment History',
-		education_heading: 'Education',
-		certificate_heading: 'Certificate',
-		social_media_heading: 'Website & Social Links',
-		skills_heading: 'Skills',
-		language_heading: 'Language',
-		hobbies_heading: 'Hobbies',
-		profile_description: 'My Profile',
-		job_title: 'Software Engineer',
-		first_name: 'Sreejith',
-		last_name: 'BS',
-		email: 'demo@gmail.com',
-		phone: '6252125262',
-		dob: '2010-04-18T09:27:00',
-		address: {
-			address: 'Address',
-			postal_code: '625232',
-			driving_license: '1234567',
-			nationality: 'Indian',
-			place_of_birth: 'Kpzha',
-			country: 'India',
-			city: 'Tvm',
-			is_active: true
-		},
-		hobbies: {
-			label: 'Drawing, Reading',
-			is_active: true
-		},
-		experience: [
-			{
-				job_title: 'Software Engineer',
-				employer: 'KritiSoft',
-				start_date: '2010-04-18T09:27:00',
-				end_date: '2010-04-18T09:27:00',
-				city: 'Tvm',
-				country: 'India',
-				description: 'Description',
-				is_active: true,
-				current_status: false
-			},
-			{
-				job_title: 'Software Engineer',
-				employer: 'Alokin',
-				start_date: '2010-04-18T09:27:00',
-				end_date: '2010-04-18T09:27:00',
-				city: 'Tvm',
-				country: 'India',
-				description: 'Description',
-				is_active: true,
-				current_status: true
-			}
-		],
-		education: [
-			{
-				course: 'SSLC',
-				institution: 'BMGHS',
-				city: 'Kollam',
-				country: 'India',
-				description: 'School',
-				start_date: '2010-04-18T09:27:00',
-				end_date: '2010-04-18T09:27:00',
-				is_active: true,
-				current_status: false
-			}
-		],
-		certificate: [
-			{
-				label: 'Web Designing',
-				url: 'https://Inet.com',
-				is_active: true
-			}
-		],
-		social_media: [
-			{
-				label: 'Instagram',
-				url: 'https://Inet.com',
-				is_active: true
-			}
-		],
-		skills: [
-			{
-				label: 'HTML5',
-				rating: 4,
-				is_active: true
-			}
-		],
-		language: [
-			{
-				label: 'Malayalam',
-				language: 'Malayalam',
-				rating: 5,
-				is_active: true
-			},
-			{
-				label: 'English',
-				language: 'English',
-				rating: 3,
-				is_active: true
-			}
-		]
-	};
 	export let theme;
+	export let id;
+
+	let resume_details = {};
+	// let resume_id;
 	let errorDetails;
 	let buttonText = 'Back';
+	let submitButton = 'Submit';
+	let baseUrl = '/landing-page/preview/';
+	let previewUrl;
+
+	// const unsubscribe = resumeDetails.subscribe((value) => {
+	// 	resume_details = value;
+	// 	resume_id = value.id;
+	// 	console.log('unsubscribe_resume_details', resume_details);
+	// });
+
 	onMount(() => {
-		updateResume();
+		// unsubscribe;
+		if (id) {
+			getResume(id, 'onMount');
+			submitButton = 'save';
+		}
 	});
-	const updateResume = () => {
+	// onDestroy(unsubscribe);
+	// $: {
+	// 	if (resume_id) {
+	// 		// console.log('resume_details');
+	// 		submitButton = 'save';
+	// 		updateResume(resume_details);
+	// 	}
+	// }
+	function updateResume(resumeData) {
+		console.log('updateResume-checking', resumeData);
 		userDetailsData.update((data) => ({
 			...data,
 			theme: resumeData?.theme || '',
@@ -150,7 +74,7 @@
 			last_name: resumeData.last_name,
 			email: resumeData.email,
 			phone: resumeData.phone,
-			dob: resumeData.dob
+			date_of_birth: resumeData.date_of_birth
 		}));
 		addressData.update((data) => ({
 			...data,
@@ -196,7 +120,7 @@
 			hobbies_heading: resumeData.hobbies_heading,
 			...resumeData.hobbies
 		}));
-	};
+	}
 	const submitForm = async () => {
 		// console.log('$form', JSON.stringify($form));
 		const inputFields = document.querySelectorAll('input');
@@ -215,34 +139,109 @@
 		// 	});
 		// });
 		let formData = $form;
-		formData.dob = formData.dob.toISOString();
+		formData.theme = theme;
 		errorDetails = validateField($form, validationRules);
 		errors.update((data) => {
 			return { ...data, ...errorDetails };
 		});
-		// console.log('errors', $errors);
+		console.log('formData', $form, 'id', !id);
 		if (Object.keys($errors).length === 0) {
 			// No errors, submit the form
 			// console.log('form', $form);
-			const response = await fetch('/api', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify($form)
-			});
-			if (response.status === 200) {
-				buttonText = 'Preview Resume';
-				alertMessage('Saved', 'Successfully Saved');
-				console.log('Form submitted successfully!', response);
+			if (!id) {
+				console.log('formdata-id', formData.id);
+				const response = await fetch('/api', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(formData)
+				})
+					.then((response) => {
+						if (response.ok) {
+							buttonText = 'Preview Resume';
+							alertMessage('Saved', 'Successfully Saved');
+							return response.json();
+						} else {
+							alertMessage('error', 'Oops, something went wrong');
+						}
+					})
+					.then((data) => {
+						console.log('response-Data', data);
+						if (data) {
+							formData.id = data[0].id;
+							id= data[0].id;
+							// updateUserDetails(data[0].id);
+							getResume(data[0].id);
+							submitButton = 'Save';
+						}
+					})
+					.catch((error) => {
+						console.error('Error', error);
+					});
 			} else {
-				alertMessage('error', 'Oops, something went wrong');
+				console.log('put is working***********');
+				const response = await fetch(`/api/${id}`, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+
+					body: JSON.stringify(resume_details)
+				})
+					.then((response) => {
+						if (response.ok) {
+							submitButton = 'Save';
+							alertMessage('Saved', 'Successfully Saved');
+							return response.json();
+						} else {
+							alertMessage('error', 'Oops, something went wrong');
+						}
+					})
+					.then((data) => {
+						console.log('response-Data', data);
+					})
+					.catch((error) => {
+						console.error('Error', error);
+					});
 			}
 		} else {
 			// Errors found, do not submit the form
 			console.log('Form contains errors. Please correct them before submitting.');
 		}
 	};
+	const getResume = async (resumeId, execute = '') => {
+		// loading = true;
+		const response = await fetch(`/api/${resumeId}`, {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		})
+			.then((response) => {
+				if (response.ok) {
+					// loading = false;
+					return response.json();
+				} else {
+					alertMessage('error', 'Oops, something went wrong');
+				}
+			})
+			.then((data) => {
+				resume_details = data.data.event?.responseBody;
+				updateResumeDetails(resume_details);
+				if (execute === 'onMount') updateResume(resume_details);
+				previewUrl = `${baseUrl}${resume_details.theme}`;
+				console.log('resume_details', resume_details, 'previewUrl', previewUrl);
+			})
+			.catch((error) => {
+				loading = false;
+				console.error('Error', error);
+			});
+	};
+	// const updateUserDetails = (id) => {
+	// 	userDetailsData.update((data) => ({
+	// 		...data,
+	// 		id
+	// 	}));
+	// };
 	function alertMessage(head, message) {
 		const modal = {
 			type: 'alert',
@@ -252,6 +251,7 @@
 		modalStore.trigger(modal);
 	}
 </script>
+
 <div class="container mx-auto w-4/5 justify-center py-20">
 	<form on:submit|preventDefault={submitForm}>
 		<UserDetails />
@@ -265,15 +265,13 @@
 		<Language />
 		<Hobbies />
 		<div class="flex gap-4 pt-10">
-			<button type="submit" class="variant-filled btn">Submit</button>
-			<a href="/landing-page/list"
-				><button
-					type="button"
-					class="variant-filled btn"
-					>{buttonText}</button
-				></a
-			>
-			<!-- <button type="button" class="variant-filled btn" on:click={}>{buttonText}</button> -->
+			<button type="submit" class="variant-filled btn">{submitButton}</button>
+			<!-- <a href="/landing-page/list"
+				><button type="button" class="variant-filled btn">{buttonText}</button></a
+			> -->
+			{#if resume_details.id}
+				<a href={previewUrl} class="variant-filled btn">Preview Resume</a>
+			{/if}
 		</div>
 	</form>
 </div>
