@@ -75,7 +75,7 @@
 								{exp.job_title ? exp.job_title : '(Not Specified)'}
 							</h4>
 							<h5 class="text-sm tracking-wider">
-								{formatDate(startDate)} - {formatDate(endDate)}
+								{formatDate(startDate)} - {exp.current_status ? 'Present' : formatDate(endDate)}
 							</h5>
 						</div>
 						<div>
@@ -103,7 +103,9 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.job_title}<p class="error">{fieldError?.[index]?.job_title}</p>{/if}
+							{#if fieldError?.[index]?.job_title}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.job_title}
+								</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Employer</h5>
@@ -117,27 +119,45 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.employer}<p class="error">{fieldError?.[index]?.employer}</p>{/if}
+							{#if fieldError?.[index]?.employer}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.employer}
+								</p>{/if}
 						</label>
 					</div>
-					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
-						<label class="label">
+					<div class="grid gap-4 pt-3 md:grid-cols-4 md:gap-10">
+						<label class="label col-span-2">
 							<h5 class="text-sm tracking-wider">Start Date</h5>
 							<DatePicker
 								bind:date={startDate}
 								id={`expStartDate-${index}`}
 								on:dateChange={updateExperienceDetails('start_date', startDate, index)}
 							/>
-							{#if fieldError?.[index]?.start_date}<p class="error">{fieldError?.[index]?.start_date}</p>{/if}
+							{#if fieldError?.[index]?.start_date}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.start_date}
+								</p>{/if}
 						</label>
-						<label class="label">
+						<label class="label" class:disabled={exp.current_status}>
 							<h5 class="text-sm tracking-wider">End Date</h5>
 							<DatePicker
 								bind:date={endDate}
 								id={`expEndDate-${index}`}
 								on:dateChange={updateExperienceDetails('end_date', endDate, index)}
 							/>
-							{#if fieldError?.[index]?.end_date}<p class="error">{fieldError?.[index]?.end_date}</p>{/if}
+							{#if fieldError?.[index]?.end_date}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.end_date}
+								</p>{/if}
+						</label>
+						<label class="label">
+							<h5 class="text-sm tracking-wider">Current Status</h5>
+							<select
+								name="current_status"
+								id={`current_status-${index}`}
+								bind:value={exp.current_status}
+								class="select rounded-sm border-0 border-s-4 tracking-wider"
+							>
+								<option value={false}>Not Working</option>
+								<option value={true}>Working</option>
+							</select>
 						</label>
 					</div>
 					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -153,7 +173,7 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.city}<p class="error">{fieldError?.[index]?.city}</p>{/if}
+							{#if fieldError?.[index]?.city}<p id="errorContainer" class="error">{fieldError?.[index]?.city}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Country</h5>
@@ -167,7 +187,9 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.country}<p class="error">{fieldError?.[index]?.country}</p>{/if}
+							{#if fieldError?.[index]?.country}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.country}
+								</p>{/if}
 						</label>
 					</div>
 					<label class="label">
@@ -182,8 +204,21 @@
 							rows="4"
 							placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
 						/>
-						{#if fieldError?.[index]?.description}<p class="error">{fieldError?.[index]?.description}</p>{/if}
+						{#if fieldError?.[index]?.description}<p id="errorContainer" class="error">
+								{fieldError?.[index]?.description}
+							</p>{/if}
 					</label>
+					<div class="space-y-2">
+						<label class="flex items-center space-x-2">
+							<input
+								class="checkbox"
+								type="checkbox"
+								on:change={() => updateExperienceDetails('is_active', !exp.is_active, index)}
+								checked={exp.is_active}
+							/>
+							<p>Section Active</p>
+						</label>
+					</div>
 				</svelte:fragment>
 			</AccordionItem>
 		</Accordion>
@@ -194,3 +229,10 @@
 		>
 	</div>
 </div>
+
+<style>
+	.disabled {
+		pointer-events: none;
+		opacity: 0.5;
+	}
+</style>

@@ -76,7 +76,7 @@
 					</div>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
-					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
+					<div class="grid gap-4 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Course</h5>
 							<input
@@ -89,7 +89,7 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.label}<p class="error">{fieldError?.[index]?.label}</p>{/if}
+							{#if fieldError?.[index]?.label}<p id="errorContainer" class="error">{fieldError?.[index]?.label}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Url</h5>
@@ -103,7 +103,18 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.url}<p class="error">{fieldError?.[index]?.url}</p>{/if}
+							{#if fieldError?.[index]?.url}<p id="errorContainer" class="error">{fieldError?.[index]?.url}</p>{/if}
+						</label>
+					</div>
+					<div class="space-y-2">
+						<label class="flex items-center space-x-2">
+							<input
+								class="checkbox"
+								type="checkbox"
+								on:change={() => updateCertificateDetails('is_active', !cert.is_active, index)}
+								checked={cert.is_active}
+							/>
+							<p>Section Active</p>
 						</label>
 					</div>
 				</svelte:fragment>

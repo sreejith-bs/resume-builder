@@ -2,17 +2,15 @@
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import Title from '../../components/Form/Title.svelte';
 	import { userDetailsData, addressData } from '../../store/store.js';
-	import { errors } from '../../store/store.js';
+	import { errors, imageData } from '../../store/store.js';
 	import { validateForm } from '$lib/validation/validation.js';
-	import { writable } from 'svelte/store';
 
 	let userDetails = $userDetailsData;
 	let addressDetails = $addressData;
 	let defaultTitle = 'Personal Details';
 	let title = userDetails.user_details_heading ? userDetails.user_details_heading : defaultTitle;
 	let fieldError = $errors;
-	const imageData = writable(null);
-
+	let localImage;
 	$: {
 		// userDetails.user_details_heading = title;
 		userDetailsData.update((data) => ({
@@ -48,6 +46,7 @@
 			reader.onload = () => {
 				// Update the image data store with the data URL
 				imageData.set(reader.result);
+				localImage = reader.result;
 			};
 		}
 	}
@@ -58,8 +57,8 @@
 		<!-- <h3 class="h3">Personal Details</h3> -->
 		<Title bind:title />
 	</div>
-	<div class="grid grid-cols-2 gap-10">
-		<label for="job_title" class="label">
+	<div class="grid grid-cols-4 gap-10">
+		<label for="job_title" class="label col-span-2">
 			<h5 class="text-sm tracking-wider">Wanted Job Title</h5>
 			<input
 				name="job_title"
@@ -71,12 +70,20 @@
 				type="text"
 				placeholder="e.g. Software Engineer"
 			/>
-			{#if fieldError.job_title}<p class="error">{fieldError.job_title}</p>{/if}
+			{#if fieldError.job_title}<p id="errorContainer" class="error">{fieldError.job_title}</p>{/if}
 		</label>
-		<input type="file" accept="image/*" onchange={handleFileInputChange} />
-		{#if $imageData}
-			<img src={$imageData} alt="Uploaded Image" />
+		<label for="profile_image" class="label">
+			<h5 class="text-sm tracking-wider">Upload Your Image</h5>
+			<div class="flex items-center gap-4">
+				<input class="input" type="file" accept="image/*" on:change={handleFileInputChange} />
+			</div>
+		</label>
+		{#if localImage}
+			<img src={$imageData} alt="Uploaded Image" class="w-20" />
+			{:else}
+			<img src="../../../../Profile-avatar.png" alt="image of resume building peopele" class="w-20"/>
 		{/if}
+
 		<!-- <Avatar
 			src="https://images.unsplash.com/photo-1617296538902-887900d9b592?ixid=M3w0Njc5ODF8MHwxfGFsbHx8fHx8fHx8fDE2ODc5NzExMDB8&ixlib=rb-4.0.3&w=128&h=128&auto=format&fit=crop"
 			width="w-20"
@@ -96,7 +103,7 @@
 				type="text"
 				placeholder="..."
 			/>
-			{#if fieldError.first_name}<p class="error">{fieldError.first_name}</p>{/if}
+			{#if fieldError.first_name}<p id="errorContainer" class="error">{fieldError.first_name}</p>{/if}
 		</label>
 		<label class="label">
 			<h5 class="text-sm tracking-wider">Last Name</h5>
@@ -110,7 +117,7 @@
 				type="text"
 				placeholder="..."
 			/>
-			{#if fieldError.last_name}<p class="error">{fieldError.last_name}</p>{/if}
+			{#if fieldError.last_name}<p id="errorContainer" class="error">{fieldError.last_name}</p>{/if}
 		</label>
 	</div>
 	<div class="grid gap-4 pt-5 md:grid-cols-2 md:gap-10 md:py-3">
@@ -126,7 +133,7 @@
 				type="text"
 				placeholder="..."
 			/>
-			{#if fieldError.email}<p class="error">{fieldError.email}</p>{/if}
+			{#if fieldError.email}<p id="errorContainer" class="error">{fieldError.email}</p>{/if}
 		</label>
 		<label class="label">
 			<h5 class="text-sm tracking-wider">Phone</h5>
@@ -140,7 +147,7 @@
 				type="text"
 				placeholder="..."
 			/>
-			{#if fieldError.phone}<p class="error">{fieldError.phone}</p>{/if}
+			{#if fieldError.phone}<p id="errorContainer" class="error">{fieldError.phone}</p>{/if}
 		</label>
 	</div>
 	<div class="grid gap-4 pt-5 md:grid-cols-2 md:gap-10 md:py-3">
@@ -156,7 +163,7 @@
 				type="text"
 				placeholder="..."
 			/>
-			{#if fieldError.address?.country}<p class="error">{fieldError.address?.country}</p>{/if}
+			{#if fieldError.address?.country}<p id="errorContainer" class="error">{fieldError.address?.country}</p>{/if}
 		</label>
 		<label class="label">
 			<h5 class="text-sm tracking-wider">City</h5>
@@ -170,7 +177,7 @@
 				type="text"
 				placeholder="..."
 			/>
-			{#if fieldError.address?.city}<p class="error">{fieldError.address?.city}</p>{/if}
+			{#if fieldError.address?.city}<p id="errorContainer" class="error">{fieldError.address?.city}</p>{/if}
 		</label>
 	</div>
 </div>

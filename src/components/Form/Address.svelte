@@ -15,10 +15,10 @@
 	$: {
 		// address.date_of_birth = date;
 		// date_of_birth = new Date(dateOfBirth).toLocaleDateString()
-		 
+
 		userDetailsData.update((data) => ({
 			...data,
-			date_of_birth : dateOfBirth
+			date_of_birth: dateOfBirth
 		}));
 		// console.log('address', address);
 		fieldError = $errors;
@@ -60,7 +60,7 @@
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.address}<p class="error">{fieldError.address?.address}</p>{/if}
+						{#if fieldError.address?.address}<p id="errorContainer" class="error">{fieldError.address?.address}</p>{/if}
 					</label>
 					<label class="label">
 						<h5 class="text-sm tracking-wider">Postal Code</h5>
@@ -74,7 +74,7 @@
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.postal_code}<p class="error">
+						{#if fieldError.address?.postal_code}<p id="errorContainer" class="error">
 								{fieldError.address?.postal_code}
 							</p>{/if}
 					</label>
@@ -98,7 +98,7 @@
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.driving_license}<p class="error">
+						{#if fieldError.address?.driving_license}<p id="errorContainer" class="error">
 								{fieldError.address?.driving_license}
 							</p>{/if}
 					</label>
@@ -114,7 +114,7 @@
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.nationality}<p class="error">
+						{#if fieldError.address?.nationality}<p id="errorContainer" class="error">
 								{fieldError.address?.nationality}
 							</p>{/if}
 					</label>
@@ -133,7 +133,7 @@
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.place_of_birth}<p class="error">
+						{#if fieldError.address?.place_of_birth}<p id="errorContainer" class="error">
 								{fieldError.address?.place_of_birth}
 							</p>{/if}
 					</label>
@@ -144,7 +144,18 @@
 							id="date_of_birth"
 							on:dateChange={updateAddressDetails('date_of_birth', dateOfBirth, 'user')}
 						/>
-						{#if fieldError.date_of_birth}<p class="error">{fieldError.date_of_birth}</p>{/if}
+						{#if fieldError.date_of_birth}<p id="errorContainer" class="error">{fieldError.date_of_birth}</p>{/if}
+					</label>
+				</div>
+				<div class="space-y-2">
+					<label class="flex items-center space-x-2">
+						<input
+							class="checkbox"
+							type="checkbox"
+							checked={address.is_active}
+							on:change={() => updateAddressDetails('is_active', !address.is_active, 'address')}
+						/>
+						<p>Section Active</p>
 					</label>
 				</div>
 			</svelte:fragment>

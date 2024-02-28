@@ -46,6 +46,6 @@
 			rows="4"
 			placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
 		/>
-		{#if fieldError?.profile_description}<p class="error">{fieldError?.profile_description}</p>{/if}
+		{#if fieldError?.profile_description}<p id="errorContainer" class="error">{fieldError?.profile_description}</p>{/if}
 	</label>
 </div>

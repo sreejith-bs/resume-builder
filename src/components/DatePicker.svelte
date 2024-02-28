@@ -35,4 +35,6 @@
 	class="input rounded-sm border-0 border-s-4 tracking-wider"
 	format="dd-MM-yyyy"
 	placeholder="20-06-2023"
+	min={new Date('01-01-1980')}
+	max={new Date()}
 />

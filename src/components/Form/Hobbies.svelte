@@ -45,6 +45,17 @@
 			rows="4"
 			placeholder="e.g. Drawing, Cricket, Reading"
 		/>
-		{#if fieldError?.label}<p class="error">{fieldError?.label}</p>{/if}
+		{#if fieldError?.label}<p id="errorContainer" class="error">{fieldError?.label}</p>{/if}
 	</label>
+	<div class="space-y-2">
+		<label class="flex items-center space-x-2">
+			<input
+				class="checkbox"
+				type="checkbox"
+				on:change={() => updateHobbiesDetails('is_active', !hobbies.is_active, 'hobbies')}
+				checked={hobbies.is_active}
+			/>
+			<p>Section Active</p>
+		</label>
+	</div>
 </div>

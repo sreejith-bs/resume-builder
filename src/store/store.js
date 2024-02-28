@@ -1,6 +1,7 @@
 import { derived, writable } from 'svelte/store';
 
 const userDetailsData = writable({
+    id: '',
     theme: '',
     user_details_heading: '',
     job_title: '',
@@ -11,6 +12,7 @@ const userDetailsData = writable({
     date_of_birth: ''
 });
 const addressData = writable({
+    id: '',
     address: '',
     postal_code: '',
     driving_license: '',
@@ -50,6 +52,7 @@ const languageData = writable({
     data: [{}]
 });
 const hobbiesData = writable({
+    id: '',
     hobbies_heading: '',
     label: '',
     is_active: true
@@ -58,6 +61,8 @@ const hobbiesData = writable({
 const errors = writable({});
 
 const resumeDetails = writable({});
+
+const imageData = writable({});
 
 const form = derived(
     [userDetailsData,
@@ -80,6 +85,7 @@ const form = derived(
         $skillsData,
         $languageData,
         $hobbiesData]) => ({
+            id: $userDetailsData.id,
             theme: $userDetailsData.theme,
             user_details_heading: $userDetailsData.user_details_heading,
             profile_heading: $profileData.profile_heading,
@@ -98,6 +104,7 @@ const form = derived(
             phone: $userDetailsData.phone,
             date_of_birth: $userDetailsData.date_of_birth,
             address: {
+                id: $addressData.id,
                 address: $addressData.address,
                 postal_code: $addressData.postal_code,
                 driving_license: $addressData.driving_license,
@@ -108,6 +115,7 @@ const form = derived(
                 is_active: $addressData.is_active
             },
             hobbies: {
+                id: $hobbiesData.id,
                 label: $hobbiesData.label,
                 is_active: $hobbiesData.is_active
             },
@@ -130,9 +138,9 @@ function updateResumeDetails(data) {
 //     job_title: $resumeDetails.job_title
 // }))
 
-// const unsubscribe = resumedetails.subscribe(newValue => {
-//     console.log('Store updated:', newValue);
-// });
+const unsubscribe = form.subscribe(newValue => {
+    console.log('Store updated:', newValue);
+});
 
 export {
     userDetailsData,
@@ -148,5 +156,6 @@ export {
     errors,
     form,
     resumeDetails,
+    imageData,
     updateResumeDetails
 }

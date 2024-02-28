@@ -17,11 +17,12 @@
 
 {#if $modalStore[0]}
 	<div>
-		<div class="">
-			<ThemeDublin />
-		</div>
 		<div class="flex flex-col items-center pb-5">
 			<button type="button" class="variant-filled btn" on:click={parent.onClose}>× Close</button>
 		</div>
+		<div class="scale-90">
+			<ThemeDublin />
+		</div>
+		
 	</div>
 {/if}

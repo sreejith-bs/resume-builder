@@ -53,7 +53,6 @@
 	}
 
 	const updateEducationDetails = (field, value, index = 0) => {
-		console.log('value', value);
 		educationData.update((data) => {
 			data.data[index][field] = value;
 			return data;
@@ -77,7 +76,9 @@
 								{edu.course ? edu.course : '(Not Specified)'}
 							</h4>
 							<h5 class="text-sm tracking-wider">
-								{formatDate(eduStartDate)} - {formatDate(eduEndDate)}
+								{formatDate(eduStartDate)} - {edu.current_status
+									? 'Present'
+									: formatDate(eduEndDate)}
 							</h5>
 						</div>
 						<div>
@@ -105,7 +106,9 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.course}<p class="error">{fieldError?.[index]?.course}</p>{/if}
+							{#if fieldError?.[index]?.course}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.course}
+								</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Institution</h5>
@@ -119,27 +122,45 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.institution}<p class="error">{fieldError?.[index]?.institution}</p>{/if}
+							{#if fieldError?.[index]?.institution}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.institution}
+								</p>{/if}
 						</label>
 					</div>
-					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
-						<label class="label">
+					<div class="grid gap-4 pt-3 md:grid-cols-4 md:gap-10">
+						<label class="label col-span-2">
 							<h5 class="text-sm tracking-wider">Start Date</h5>
 							<DatePicker
 								bind:date={eduStartDate}
 								id={`eduStartDate-${index}`}
 								on:dateChange={updateEducationDetails('start_date', eduStartDate, index)}
 							/>
-							{#if fieldError?.[index]?.start_date}<p class="error">{fieldError?.[index]?.start_date}</p>{/if}
+							{#if fieldError?.[index]?.start_date}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.start_date}
+								</p>{/if}
 						</label>
-						<label class="label">
+						<label class="label" class:disabled={edu.current_status}>
 							<h5 class="text-sm tracking-wider">End Date</h5>
 							<DatePicker
 								bind:date={eduEndDate}
 								id={`eduEndDate-${index}`}
 								on:dateChange={updateEducationDetails('end_date', eduEndDate, index)}
 							/>
-							{#if fieldError?.[index]?.end_date}<p class="error">{fieldError?.[index]?.end_date}</p>{/if}
+							{#if fieldError?.[index]?.end_date}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.end_date}
+								</p>{/if}
+						</label>
+						<label class="label">
+							<h5 class="text-sm tracking-wider">Current Status</h5>
+							<select
+								name="current_status"
+								id={`current_status-${index}`}
+								bind:value={edu.current_status}
+								class="select rounded-sm border-0 border-s-4 tracking-wider"
+							>
+								<option value={false}>Completed</option>
+								<option value={true}>On Going</option>
+							</select>
 						</label>
 					</div>
 					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -155,7 +176,7 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.city}<p class="error">{fieldError?.[index]?.city}</p>{/if}
+							{#if fieldError?.[index]?.city}<p id="errorContainer" class="error">{fieldError?.[index]?.city}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Country</h5>
@@ -169,7 +190,9 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.country}<p class="error">{fieldError?.[index]?.country}</p>{/if}
+							{#if fieldError?.[index]?.country}<p id="errorContainer" class="error">
+									{fieldError?.[index]?.country}
+								</p>{/if}
 						</label>
 					</div>
 					<label class="label">
@@ -184,8 +207,21 @@
 							rows="4"
 							placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
 						/>
-						{#if fieldError?.[index]?.description}<p class="error">{fieldError?.[index]?.description}</p>{/if}
+						{#if fieldError?.[index]?.description}<p id="errorContainer" class="error">
+								{fieldError?.[index]?.description}
+							</p>{/if}
 					</label>
+					<div class="space-y-2">
+						<label class="flex items-center space-x-2">
+							<input
+								class="checkbox"
+								type="checkbox"
+								on:change={() => updateEducationDetails('is_active', !edu.is_active, index)}
+								checked={edu.is_active}
+							/>
+							<p>Section Active</p>
+						</label>
+					</div>
 				</svelte:fragment>
 			</AccordionItem>
 		</Accordion>
@@ -196,3 +232,10 @@
 		>
 	</div>
 </div>
+
+<style>
+	.disabled {
+		pointer-events: none;
+		opacity: 0.5;
+	}
+</style>

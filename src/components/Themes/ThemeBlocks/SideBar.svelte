@@ -11,7 +11,8 @@
     let addressDetails = details.address
     let userDetails = {
         phone: details.phone,
-        email: details.email
+        email: details.email,
+        theme: details?.theme
     }
     let skillsDetails = {
         skills_heading: details.skills_heading,
@@ -30,7 +31,7 @@
         hobbies: details.hobbies
     }
 </script>
-<div class="bg-blue-950 p-4 text-slate-50">
+<div>
     <AddressBlock details={addressDetails}/>
     <UserDetailsBlock details={userDetails}/>
     <SkillsBlock details={skillsDetails}/>

@@ -8,7 +8,8 @@
 
     let profileDetails = {
         profile_heading: details.profile_heading,
-        profile_description: details.profile_description
+        profile_description: details.profile_description,
+        theme: details?.theme
     }
     let experienceDetails = {
         experience_heading: details.experience_heading,

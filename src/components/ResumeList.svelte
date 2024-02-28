@@ -16,7 +16,7 @@
 	let currentPageItems = [];
 	let loading = false;
 	let deleteFlag = false;
-	let baseUrl = '/landing-page/form/';
+	let editUrl = `/landing-page/form/edit/`;
 	// let previewUrl;
 
 	onMount(() => {
@@ -37,9 +37,12 @@
 		}
 	};
 	const updateCurrentPageItems = () => {
+		console.log('currentPage', currentPage);
+
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		currentPageItems = allResumeDetails.slice(startIndex, endIndex);
+		console.log('currentPageItems', currentPageItems);
 	};
 	const getResumeList = async () => {
 		try {
@@ -150,45 +153,67 @@
 </script>
 
 <div>
-	{#if currentPageItems.length}
-		<div class="grid grid-cols-4 gap-x-14 py-4">
+	{#if allResumeDetails.length}
+		<div class="grid gap-x-14 py-4 text-slate-50 md:grid-cols-2 lg:grid-cols-4">
 			{#each currentPageItems as item}
 				<div
-					class:placeholder={loading}
-					class:animate-pulse={loading}
-					class="card card-hover h-80 rounded-none text-center"
+					class:background-img1={item.theme === 'theme1'}
+					class:background-img2={item.theme === 'theme2'}
+					class:background-img3={item.theme === 'theme3'}
 				>
-					<header class="card-header">{item.job_title}</header>
-					<section class="p-4">
-						<p>{item.first_name} {item.last_name}</p>
-						<p>{item.email}</p>
-						<p>{item.profile_description}</p>
-					</section>
-					<footer class="card-footer">
-						<button type="button" class="variant-filled btn btn-sm" on:click={deleteResume(item.id)}
-							>Delete</button
-						>
-						<button
-							type="button"
-							class="variant-filled btn btn-sm"
-							on:click={() => {
-								viewResume(item.id, 'view');
-							}}>View</button
-						>
-						<a href="{baseUrl}{item.theme}/{item.id}"
-							><button
+				<!-- class:placeholder={loading}
+						class:animate-pulse={loading} -->
+					<div class="content card card-hover rounded-none">
+						<header class="card-header">
+							<span class="font-bold">Job Title:</span>
+							{item.job_title}
+						</header>
+						<section class="p-4">
+							<p><span class="font-bold">Name:</span> {item.first_name} {item.last_name}</p>
+							<p><span class="font-bold">Email:</span> {item.email}</p>
+							<p class="line-clamp-5">
+								<span class="font-bold">Profile Summary:</span>
+								<span>{item.profile_description}</span>
+							</p>
+							<p>
+								<span class="font-bold">Template:</span>
+								{item.theme === 'theme1' ? 'Dublin' : item.theme === 'theme2' ? 'Madrid' : 'Sydney'}
+							</p>
+						</section>
+						<footer class="card-footer grid h-40 grid-cols-3 content-end gap-4">
+							<button
 								type="button"
 								class="variant-filled btn btn-sm"
-								>Edit</button
-							></a
-						>
-					</footer>
+								on:click={deleteResume(item.id)}>Delete</button
+							>
+							<!-- <button
+								type="button"
+								class="variant-filled btn btn-sm"
+								on:click={() => {
+									viewResume(item.id, 'view');
+								}}>View</button
+							> -->
+							<a href="{editUrl}{item.theme}/{item.id}" class="variant-filled btn btn-sm"
+								><button type="button">Edit</button></a
+							>
+						</footer>
+					</div>
 				</div>
 			{/each}
 		</div>
 		<div class="flex justify-end gap-4">
-			<button type="button" class="variant-filled btn" on:click={previousPage}>Previous</button>
-			<button type="button" class="variant-filled btn" on:click={nextPage}>Next</button>
+			<button
+				type="button"
+				class="variant-filled btn"
+				on:click={previousPage}
+				disabled={currentPage === 1}>Previous</button
+			>
+			<button
+				type="button"
+				class="variant-filled btn"
+				on:click={nextPage}
+				disabled={currentPage * itemsPerPage === allResumeDetails.length}>Next</button
+			>
 		</div>
 	{:else}
 		<div class="grid h-40 grid-cols-1 gap-x-14 py-4">
@@ -208,3 +233,26 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+	.background-img1 {
+		background-image: url('../ThemeDublinBlur.png');
+		background-size: cover;
+		background-repeat: no-repeat;
+		/* filter: blur(8px);
+		-webkit-filter: blur(8px); */
+	}
+	.background-img2 {
+		background-image: url('../ThemeMadridBlur.png');
+		background-size: cover;
+		background-repeat: no-repeat;
+	}
+	.background-img3 {
+		background-image: url('../ThemeSydneyBlur.png');
+		background-size: cover;
+		background-repeat: no-repeat;
+	}
+	.content {
+		background-color: rgba(0, 0, 0, 0.8);
+	}
+</style>

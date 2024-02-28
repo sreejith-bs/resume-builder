@@ -75,7 +75,7 @@
 					</div>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
-					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
+					<div class="grid gap-4 md:grid-cols-2 md:gap-10">
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Skill</h5>
 							<input
@@ -88,7 +88,7 @@
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.label}<p class="error">{fieldError?.[index]?.label}</p>{/if}
+							{#if fieldError?.[index]?.label}<p id="errorContainer" class="error">{fieldError?.[index]?.label}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Level</h5>
@@ -100,9 +100,22 @@
 								on:blur={validateForm('rating', skil.rating, 'skills', 'array', index)}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="number"
+								min="1"
+								max="5"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.rating}<p class="error">{fieldError?.[index]?.rating}</p>{/if}
+							{#if fieldError?.[index]?.rating}<p id="errorContainer" class="error">{fieldError?.[index]?.rating}</p>{/if}
+						</label>
+					</div>
+					<div class="space-y-2">
+						<label class="flex items-center space-x-2">
+							<input
+								class="checkbox"
+								type="checkbox"
+								on:change={() => updateSkillDetails('is_active', !skil.is_active, index)}
+								checked={skil.is_active}
+							/>
+							<p>Section Active</p>
 						</label>
 					</div>
 				</svelte:fragment>

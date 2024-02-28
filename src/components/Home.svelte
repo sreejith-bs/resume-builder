@@ -7,7 +7,7 @@
 			<p class="text-gray-600 mb-8">
 				Struggling to write a compelling resume? We've got you covered.
 			</p>
-            <a href="/landing-page/create" class="px-4 py-2 bg-blue-500 text-white font-bold rounded">Start Building Now</a>
+            <a href="/landing-page/create" class="px-4 py-2 variant-filled text-white font-bold btn rounded">Start Building Now</a>
 		</div>
 		<div class="flex flex-col items-center justify-center text">
             <img src="./ResumeBuilder-E-1.png" alt="image of resume building peopele" />
