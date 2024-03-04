@@ -3,7 +3,6 @@
     import ThemeWrapper from "./Themes/ThemeWrapper.svelte";
     import { page } from "$app/stores";
 
-    console.log('params', $page.params)
     const resumeTheme = $page.params.theme;
     const resumeId = $page.params.id;
 

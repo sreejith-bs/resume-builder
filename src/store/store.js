@@ -24,32 +24,66 @@ const addressData = writable({
 });
 const profileData = writable({
     profile_heading: '',
-    profile_description: '',
-    is_active: true
+    profile_description: ''
 });
 const experienceData = writable({
     experience_heading: '',
-    data: [{}]
+    data: [{
+        job_title: '',
+        employer: '',
+        start_date: '',
+        end_date: '',
+        city: '',
+        country: '',
+        description: '',
+        current_status: false,
+        is_active: true
+    }]
 });
 const educationData = writable({
     education_heading: '',
-    data: [{}]
+    data: [{
+        course: '',
+        institution: '',
+        start_date: '',
+        end_date: '',
+        city: '',
+        country: '',
+        description: '',
+        current_status: false,
+        is_active: true
+    }]
 });
 const certificateData = writable({
     certificate_heading: '',
-    data: [{}]
+    data: [{
+        label: '',
+        url: '',
+        is_active: true
+    }]
 });
 const socialMediaData = writable({
     social_media_heading: '',
-    data: [{}]
+    data: [{
+        label: '',
+        is_active: true
+    }]
 });
 const skillsData = writable({
     skills_heading: '',
-    data: [{}]
+    data: [{
+        label: '',
+        rating: Boolean,
+        is_active: true
+    }]
 });
 const languageData = writable({
     language_heading: '',
-    data: [{}]
+    data: [{
+        label: '',
+        rating: Boolean,
+        is_active: true
+    }]
 });
 const hobbiesData = writable({
     id: '',
@@ -57,6 +91,13 @@ const hobbiesData = writable({
     label: '',
     is_active: true
 });
+
+const appConfigData = writable({
+    selectedTab: 0,
+    edit: false,
+    theme: '',
+    id: ''
+})
 
 const errors = writable({});
 
@@ -138,9 +179,9 @@ function updateResumeDetails(data) {
 //     job_title: $resumeDetails.job_title
 // }))
 
-const unsubscribe = form.subscribe(newValue => {
-    console.log('Store updated:', newValue);
-});
+// const unsubscribe = form.subscribe(newValue => {
+//     console.log('Store updated:', newValue);
+// });
 
 export {
     userDetailsData,
@@ -157,5 +198,6 @@ export {
     form,
     resumeDetails,
     imageData,
+    appConfigData,
     updateResumeDetails
 }

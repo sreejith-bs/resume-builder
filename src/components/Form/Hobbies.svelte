@@ -2,7 +2,7 @@
 	import Title from '../../components/Form/Title.svelte';
 	import { hobbiesData } from '../../store/store.js';
 	import { errors } from '../../store/store.js';
-	import { validateForm } from '$lib/validation/validation.js';
+	import { validateForm, customValidation } from '$lib/validation/validation.js';
 
 	let hobbies = $hobbiesData;
 
@@ -20,12 +20,17 @@
 	}
 
 	const updateHobbiesDetails = (field, value) => {
-		console.log('value---', value)
 		hobbiesData.update((data) => ({
 			...data,
 			[field]: value
 		}));
 	};
+	function validateInput(event) {
+		const inputElement = event.target;
+		const rule = JSON.parse(inputElement.dataset.rule.replace(/'/g, '"'));
+
+		customValidation.validate(inputElement, rule);
+	}
 </script>
 
 <div id="hobbies">
@@ -34,18 +39,23 @@
 		<!-- <h3 class="h3">Hobbies</h3> -->
 	</div>
 	<label class="label">
-		<span class="text-sm tracking-wider">What do you like?</span>
+		<span class="text-sm tracking-wider">What do you like?*</span>
 		<textarea
 			name="hobbies"
 			id="hobbies"
 			bind:value={hobbies.label}
-			on:input={() => updateHobbiesDetails('label', hobbies.label)}
-			on:blur={validateForm('label', hobbies.label, 'hobbies', 'nested')}
+			on:input={(event) => {
+				updateHobbiesDetails('label', hobbies.label);
+				validateInput(event);
+			}}
+			on:blur={validateInput}
+			data-rule="['required']"
+			data-error="hobbiesError"
 			class="textarea rounded-sm border-0 border-s-4 tracking-wider"
 			rows="4"
 			placeholder="e.g. Drawing, Cricket, Reading"
 		/>
-		{#if fieldError?.label}<p id="errorContainer" class="error">{fieldError?.label}</p>{/if}
+		<span class="error-msg text-xs" id="hobbiesError"></span>
 	</label>
 	<div class="space-y-2">
 		<label class="flex items-center space-x-2">

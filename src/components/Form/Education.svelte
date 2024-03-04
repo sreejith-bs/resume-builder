@@ -4,12 +4,13 @@
 	import Title from '../../components/Form/Title.svelte';
 	import DatePicker from '../DatePicker.svelte';
 	import { errors } from '../../store/store.js';
-	import { validateForm } from '$lib/validation/validation.js';
+	import { validateForm, customValidation } from '$lib/validation/validation.js';
 	import { formatDate } from '$lib/utils.js';
+	import exp from 'constants';
 
 	let education = $educationData;
-	let eduStartDate = new Date();
-	let eduEndDate = new Date();
+	let eduStartDate;
+	let eduEndDate;
 	let fieldError = $errors.education;
 
 	function add() {
@@ -26,7 +27,20 @@
 		// });
 		educationData.update((data) => ({
 			...data,
-			data: [...data.data, {}] // Add a new empty object to the array
+			data: [
+				...data.data,
+				{
+					course: '',
+					institution: '',
+					start_date: '',
+					end_date: '',
+					city: '',
+					country: '',
+					description: '',
+					current_status: false,
+					is_active: true
+				}
+			] // Add a new empty object to the array
 		}));
 	}
 	function remove(index = 0) {
@@ -44,9 +58,9 @@
 		// education.education_heading = title;
 		educationData.update((data) => ({
 			...data,
-			education_heading: title,
-			start_date: eduStartDate,
-			end_date: eduEndDate
+			education_heading: title
+			// start_date: eduStartDate,
+			// end_date: eduEndDate
 		}));
 		education = $educationData;
 		fieldError = $errors.education;
@@ -58,6 +72,18 @@
 			return data;
 		});
 	};
+
+	function validateInput(event, date = '') {
+		const inputElement = event.target;
+		const rule = JSON.parse(inputElement.dataset.rule.replace(/'/g, '"'));
+
+		customValidation.validate(inputElement, rule, date);
+	}
+	function removeDateValidation(index) {
+		const endDateElement = document.getElementById(`eduEndDate-${index}`);
+		endDateElement.value = '';
+		endDateElement.dispatchEvent(new Event('blur'));
+	}
 </script>
 
 <div id="education">
@@ -76,9 +102,9 @@
 								{edu.course ? edu.course : '(Not Specified)'}
 							</h4>
 							<h5 class="text-sm tracking-wider">
-								{formatDate(eduStartDate)} - {edu.current_status
+								{edu.start_date || '(Start Date)'} - {edu.current_status
 									? 'Present'
-									: formatDate(eduEndDate)}
+									: edu.end_date || '(End Date)'}
 							</h5>
 						</div>
 						<div>
@@ -95,60 +121,98 @@
 				<svelte:fragment slot="content">
 					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
-							<h5 class="text-sm tracking-wider">Course</h5>
+							<h5 class="text-sm tracking-wider">Course*</h5>
 							<input
 								name="course"
 								id={`course-${index}`}
 								bind:value={edu.course}
-								on:input={() => updateEducationDetails('course', edu.course, index)}
-								on:blur={validateForm('course', edu.course, 'education', 'array', index)}
+								on:input={(event) => {
+									updateEducationDetails('course', edu.course, index);
+									validateInput(event);
+								}}
+								on:blur={validateInput}
+								data-rule="['required']"
+								data-error={`eCourceError-${index}`}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.course}<p id="errorContainer" class="error">
-									{fieldError?.[index]?.course}
-								</p>{/if}
+							<span class="error-msg text-xs" id={`eCourceError-${index}`}></span>
 						</label>
 						<label class="label">
-							<h5 class="text-sm tracking-wider">Institution</h5>
+							<h5 class="text-sm tracking-wider">Institution/University*</h5>
 							<input
 								name="institution"
 								id={`institution-${index}`}
 								bind:value={edu.institution}
-								on:input={() => updateEducationDetails('institution', edu.institution, index)}
-								on:blur={validateForm('institution', edu.institution, 'education', 'array', index)}
+								on:input={(event) => {
+									updateEducationDetails('institution', edu.institution, index);
+									validateInput(event);
+								}}
+								on:blur={validateInput}
+								data-rule="['required']"
+								data-error={`institutionError-${index}`}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.institution}<p id="errorContainer" class="error">
-									{fieldError?.[index]?.institution}
-								</p>{/if}
+							<span class="error-msg text-xs" id={`institutionError-${index}`}></span>
 						</label>
 					</div>
 					<div class="grid gap-4 pt-3 md:grid-cols-4 md:gap-10">
 						<label class="label col-span-2">
-							<h5 class="text-sm tracking-wider">Start Date</h5>
-							<DatePicker
+							<h5 class="text-sm tracking-wider">Start Date*</h5>
+							<!-- <DatePicker
 								bind:date={eduStartDate}
 								id={`eduStartDate-${index}`}
-								on:dateChange={updateEducationDetails('start_date', eduStartDate, index)}
+								on:dateChange={(event) => {
+									updateEducationDetails('start_date', eduStartDate, index);
+									validateInput(event);
+								}}
+							/> -->
+							<input
+								name="eduStartDate"
+								id={`eduStartDate-${index}`}
+								bind:value={edu.start_date}
+								on:input={(event) => {
+									updateEducationDetails('start_date', edu.start_date, index);
+									validateInput(event);
+								}}
+								on:blur={validateInput}
+								data-rule="['required', 'date']"
+								data-error={`eduStartDateError-${index}`}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
+								type="text"
+								placeholder="dd-mm-yyyy"
 							/>
-							{#if fieldError?.[index]?.start_date}<p id="errorContainer" class="error">
-									{fieldError?.[index]?.start_date}
-								</p>{/if}
+							<span class="error-msg text-xs" id={`eduStartDateError-${index}`}></span>
 						</label>
 						<label class="label" class:disabled={edu.current_status}>
-							<h5 class="text-sm tracking-wider">End Date</h5>
-							<DatePicker
+							<h5 class="text-sm tracking-wider">End Date*</h5>
+							<!-- <DatePicker
 								bind:date={eduEndDate}
 								id={`eduEndDate-${index}`}
-								on:dateChange={updateEducationDetails('end_date', eduEndDate, index)}
+								on:dateChange={(event) => {
+									updateEducationDetails('end_date', eduEndDate, index);
+									validateInput(event);
+								}}
+							/> -->
+							<input
+								name="eduEndDate"
+								id={`eduEndDate-${index}`}
+								bind:value={edu.end_date}
+								on:input={(event) => {
+									updateEducationDetails('end_date', edu.end_date, index);
+									validateInput(event, edu.start_date);
+								}}
+								on:blur={validateInput(event, edu.start_date)}
+								data-rule={!edu.current_status ? "['required', 'date', 'compare']" : '[]'}
+								data-error={`eduEndDateError-${index}`}
+								class="input rounded-sm border-0 border-s-4 tracking-wider"
+								type="text"
+								placeholder="dd-mm-yyyy"
 							/>
-							{#if fieldError?.[index]?.end_date}<p id="errorContainer" class="error">
-									{fieldError?.[index]?.end_date}
-								</p>{/if}
+							<span class="error-msg text-xs" id={`eduEndDateError-${index}`}></span>
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Current Status</h5>
@@ -157,6 +221,9 @@
 								id={`current_status-${index}`}
 								bind:value={edu.current_status}
 								class="select rounded-sm border-0 border-s-4 tracking-wider"
+								on:change={() => {
+									if (edu.current_status) removeDateValidation(index);
+								}}
 							>
 								<option value={false}>Completed</option>
 								<option value={true}>On Going</option>
@@ -165,34 +232,42 @@
 					</div>
 					<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 						<label class="label">
-							<h5 class="text-sm tracking-wider">City</h5>
+							<h5 class="text-sm tracking-wider">City*</h5>
 							<input
 								name="city"
 								id={`city-${index}`}
 								bind:value={edu.city}
-								on:input={() => updateEducationDetails('city', edu.city, index)}
-								on:blur={validateForm('city', edu.city, 'education', 'array', index)}
+								on:input={(event) => {
+									updateEducationDetails('city', edu.city, index);
+									validateInput(event);
+								}}
+								on:blur={validateInput}
+								data-rule="['required']"
+								data-error={`eduCityError-${index}`}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.city}<p id="errorContainer" class="error">{fieldError?.[index]?.city}</p>{/if}
+							<span class="error-msg text-xs" id={`eduCityError-${index}`}></span>
 						</label>
 						<label class="label">
-							<h5 class="text-sm tracking-wider">Country</h5>
+							<h5 class="text-sm tracking-wider">Country*</h5>
 							<input
 								name="country"
 								id={`country-${index}`}
 								bind:value={edu.country}
-								on:input={() => updateEducationDetails('country', edu.country, index)}
-								on:blur={validateForm('country', edu.country, 'education', 'array', index)}
+								on:input={(event) => {
+									updateEducationDetails('country', edu.country, index);
+									validateInput(event);
+								}}
+								on:blur={validateInput}
+								data-rule="['required']"
+								data-error={`eduCountryError-${index}`}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.country}<p id="errorContainer" class="error">
-									{fieldError?.[index]?.country}
-								</p>{/if}
+							<span class="error-msg text-xs" id={`eduCountryError-${index}`}></span>
 						</label>
 					</div>
 					<label class="label">
@@ -201,15 +276,13 @@
 							name="description"
 							id={`description-${index}`}
 							bind:value={edu.description}
-							on:input={() => updateEducationDetails('description', edu.description, index)}
-							on:blur={validateForm('description', edu.description, 'education', 'array', index)}
+							on:input={(event) => {
+								updateEducationDetails('description', edu.description, index);
+							}}
 							class="textarea rounded-sm border-0 border-s-4 tracking-wider"
 							rows="4"
 							placeholder="e.g. Driven Front-End Developer with diverse skills seeking opportunity to..."
 						/>
-						{#if fieldError?.[index]?.description}<p id="errorContainer" class="error">
-								{fieldError?.[index]?.description}
-							</p>{/if}
 					</label>
 					<div class="space-y-2">
 						<label class="flex items-center space-x-2">

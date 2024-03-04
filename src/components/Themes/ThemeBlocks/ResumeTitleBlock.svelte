@@ -7,7 +7,6 @@
 
 	const unsubscribe = imageData.subscribe((value) => {
 		img_details = value;
-		console.log('img_details', typeof img_details);
 	});
 
 	onMount(() => {

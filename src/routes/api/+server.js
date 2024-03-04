@@ -44,9 +44,9 @@ export async function GET() {
 }
 
 export async function POST(data) {
+  console.log('POST++++++++++++++++++++++++')
   try {
     let formData = await data.request.json()
-    console.log('FORM-Data+++++', formData);
     const query = e.params({ items: e.json }, (params) => {
       return e.for(e.json_array_unpack(params.items), (item) => {
         return e.insert(e.UserDetails, {
@@ -138,7 +138,6 @@ export async function POST(data) {
         });
       });
     });
-    console.log('query*************', query);
     const responseBody = await query.run(client, {
       items: [formData]
     });
@@ -148,9 +147,7 @@ export async function POST(data) {
     return new Response(JSON.stringify(responseBody))
     // return json(createSuccessResponse({ event: { responseBody } }));
 
-  } catch (error) {
-    console.log('error', error)
-  }
+  } catch (error) {}
 }
 // console.log('typeOff*****************', typeof data);
 

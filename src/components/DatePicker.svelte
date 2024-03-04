@@ -2,7 +2,7 @@
 	import { DateInput } from 'date-picker-svelte';
 	import { onMount, createEventDispatcher } from 'svelte';
 
-	export let date = new Date();
+	export let date;
 	export let id;
 	const dispatch = createEventDispatcher();
 
@@ -25,6 +25,11 @@
 		dispatch('dateChange', event.returnValue);
 	}
 
+	function handleBlur(event) {
+		console.log('event-blur', event);
+		dispatch('dateOnBlur', event)
+	}
+
 	onMount(updateDatePickerClass);
 </script>
 
@@ -32,9 +37,10 @@
 	bind:value={date}
 	{id}
 	on:select={handleChange}
+	on:blur={handleBlur}
 	class="input rounded-sm border-0 border-s-4 tracking-wider"
 	format="dd-MM-yyyy"
-	placeholder="20-06-2023"
+	placeholder="dd-mm-yyyy"
 	min={new Date('01-01-1980')}
 	max={new Date()}
 />

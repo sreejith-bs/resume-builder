@@ -4,21 +4,25 @@
 	import SideBar from './ThemeBlocks/SideBar.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { form } from '../../store/store';
-
+	import { goto } from '$app/navigation';
 	export let theme;
 	export let id;
 	export let edit;
-	let baseUrl = '/landing-page/form/';
-	let backUrl = `${baseUrl}edit/${theme}/${id}`;
 	let resume_details = $form;
 
 	// onMount(() => {
 	// 	backUrl = edit ? `${baseUrl}edit/${theme}/${id}` : `${baseUrl}${theme}`;
 	// });
+	// function closePreview() {
+	// 	goto('/landing-page/form')
+	// }
 </script>
 
 {#if resume_details.theme}
-	<div class="overflow-none resume-height container mx-auto w-[794px] bg-slate-50 px-8 py-6">
+	<div
+		id="section-to-print"
+		class="overflow-none resume-box container mx-auto my-6 w-[794px] bg-slate-50 px-8 py-6"
+	>
 		<ResumeTitleBlock
 			name={`${resume_details.first_name} ${resume_details.last_name}`}
 			jobTitle={resume_details.job_title}
@@ -31,14 +35,15 @@
 			</div>
 		</div>
 	</div>
-	<div class="flex flex-col items-center">
-		<a href={backUrl} class="variant-filled btn btn-sm my-6 w-[100px] py-3">Close</a>
-	</div>
+	<!-- <div class="no-print flex flex-col items-center">
+		<button class="variant-filled btn btn-sm my-6 w-[100px] py-3" on:click={closePreview}>Close</button>
+	</div> -->
 {/if}
 
 <style>
-	.resume-height {
+	.resume-box {
 		min-height: 100%;
+		border: 0.5px solid black;
 		/* scale: 0.9; */
 	}
 	.body-container {
@@ -49,4 +54,14 @@
 	.item1 {
 		grid-column: 1 / span 3;
 	}
+	/* @media print {
+		body * {
+			display: none;
+		}
+
+		#section-to-print,
+		#section-to-print * {
+			display: block;
+		}
+	} */
 </style>

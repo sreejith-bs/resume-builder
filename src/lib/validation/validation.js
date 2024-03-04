@@ -16,7 +16,16 @@ export function validateField(formData, validationRules) {
                             const subParts = subKey.split(".");
                             const nestedKey = subParts.filter(item => item !== '*');
                             nestedKey.forEach((key) => {
+                                // if(key.includes('_date') && arrayPath === 'experience'){
+                                //     console.log('key_**', key, 'formData[arrayPath]', formData[arrayPath]);
+                                //     console.log('hasOwnProperty', item.hasOwnProperty(key));
+                                //     console.log('nestedKey', nestedKey);
+                                // }
+                                // if(arrayPath === 'experience' && formData[arrayPath][index].hasOwnProperty(key)) {
+                                //     console.log('item.hasOwnProperty(key)', item.hasOwnProperty(key), 'rule.pattern', rule.pattern, 'item[key]', item[key], 'formData[arrayPath][index].hasOwnProperty(key)', formData[arrayPath][index].hasOwnProperty(key), 'arrayPath', arrayPath, 'key', key);
+                                // }
                                 if ((!item.hasOwnProperty(key) || (rule.pattern && !rule.pattern?.test(item[key])) || !item[key] && rule.required) && formData[arrayPath][index].hasOwnProperty(key) && arrayPath !== key) {
+                                    console.log('rule.message', rule.message);
                                     subErrorObject[key] = rule.message;
                                 }
                             })
@@ -79,6 +88,7 @@ export function validateForm(field, value, parentKey = '', type = 'object', inde
             [parentKey]: []
         }
         // Update the object at the specified index or push a new object if the index is out of bounds
+        console.log(field, value);
         formData[parentKey][index] = { [field]: value }
     }
     let fieldError = validateField(formData, validationRules);
@@ -126,3 +136,89 @@ export function validateForm(field, value, parentKey = '', type = 'object', inde
         }
     });
 };
+
+export const customValidation = {
+    rules: {
+        required: {
+            validate: function (input) {
+                return input.value.trim() !== ''
+            },
+            message: 'Required'
+        },
+        email: {
+            validate: function (input) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                return emailRegex.test(input.value)
+            },
+            message: 'Please enter a valid email address'
+        },
+        phone: {
+            validate: function (input) {
+                const phoneRegrex = /^\d{10}$/
+                return phoneRegrex.test(input.value)
+            },
+            message: 'Please enter a valid mobile number'
+        },
+        date: {
+            validate: function (input) {
+                const dateRegrex = /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-\d{4}$/
+                return dateRegrex.test(input.value)
+            },
+            message: "Please enter date in DD-MM-YYYY format"
+        },
+        compare: {
+            validate: function (input, date) {
+                const startDate = input.value
+                const endDate = date
+                const [startDay, startMonth, startYear] = startDate.split('-').map(Number);
+                const [endDay, endMonth, endYear] = endDate.split('-').map(Number);
+                const startDateObj = new Date(startYear, startMonth - 1, startDay);
+                const endDateObj = new Date(endYear, endMonth - 1, endDay);
+                return startDateObj > endDateObj;
+            },
+            message: "End date could not less than start date"
+        },
+        url: {
+            validate: function (input) {
+                const urlRegrex = /^(http|https):\/\/[^ "]+$/
+                return urlRegrex.test(input.value)
+            },
+            message: "Please enter a valid URL"
+        }
+    },
+    validate: function (input, rules, date = '') {
+        const isValid = rules.every(rule => {
+            if (rule !== 'compare' && !this.rules[rule].validate(input)) {
+                this.showError(input, this.rules[rule].message)
+                return false
+            } else if (rule === 'compare' && !this.rules[rule].validate(input, date)) {
+                this.showError(input, this.rules[rule].message)
+                return false
+            }
+            return true
+        })
+        if (isValid) {
+            this.clearError(input)
+        }
+        return isValid
+    },
+    showError: function (input, message) {
+        const errorElementId = input.dataset.error
+        const errorElement = document.getElementById(errorElementId)
+        if (errorElement) {
+            errorElement.textContent = message
+            input.classList.add('error', 'border-red-600')
+        }
+    },
+    clearError: function (input) {
+        const errorElementId = input.dataset.error
+        const errorElement = document.getElementById(errorElementId)
+        if (errorElement) {
+            errorElement.textContent = ''
+            input.classList.remove('error', 'border-red-600')
+        }
+    }
+
+}
+
+// export {customValidation}

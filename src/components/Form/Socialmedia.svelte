@@ -3,7 +3,7 @@
 	import Title from '../../components/Form/Title.svelte';
 	import { socialMediaData } from '../../store/store.js';
 	import { errors } from '../../store/store.js';
-	import { validateForm } from '$lib/validation/validation.js';
+	import { validateForm, customValidation } from '$lib/validation/validation.js';
 
 	let social_media = $socialMediaData;
 	let fieldError = $errors.social_media;
@@ -15,7 +15,7 @@
 		// });
 		socialMediaData.update((data) => ({
 			...data,
-			data: [...data.data, {}] // Add a new empty object to the array
+			data: [...data.data, { label: '', is_active: true }] // Add a new empty object to the array
 		}));
 	}
 	function remove(index = 0) {
@@ -35,7 +35,7 @@
 			...data,
 			social_media_heading: title
 		}));
-		social_media = $socialMediaData
+		social_media = $socialMediaData;
 		fieldError = $errors.social_media;
 	}
 	const updateSocialMediaDetails = (field, value, index = 0) => {
@@ -44,6 +44,12 @@
 			return data;
 		});
 	};
+	function validateInput(event) {
+		const inputElement = event.target;
+		const rule = JSON.parse(inputElement.dataset.rule.replace(/'/g, '"'));
+
+		customValidation.validate(inputElement, rule);
+	}
 </script>
 
 <div id="socialMedia">
@@ -81,13 +87,18 @@
 								name="label"
 								id={`label-${index}`}
 								bind:value={soc.label}
-								on:input={() => updateSocialMediaDetails('label', soc.label, index)}
-								on:blur={validateForm('label', soc.label, 'social_media', 'array', index)}
+								on:input={(event) => {
+									updateSocialMediaDetails('label', soc.label, index);
+									validateInput(event);
+								}}
+								on:blur={validateInput}
+								data-rule="['required']"
+								data-error={`socialMediaError-${index}`}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.label}<p id="errorContainer" class="error">{fieldError?.[index]?.label}</p>{/if}
+							<span class="error-msg text-xs" id={`socialMediaError-${index}`}></span>
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Url</h5>
@@ -95,13 +106,18 @@
 								name="url"
 								id={`url-${index}`}
 								bind:value={soc.url}
-								on:input={() => updateSocialMediaDetails('url', soc.url, index)}
-								on:blur={validateForm('url', soc.url, 'social_media', 'array', index)}
+								on:input={(event) => {
+									updateSocialMediaDetails('url', soc.url, index);
+									validateInput(event);
+								}}
+								on:blur={validateInput}
+								data-rule="['required', 'url']"
+								data-error={`socUrlError-${index}`}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.url}<p id="errorContainer" class="error">{fieldError?.[index]?.url}</p>{/if}
+							<span class="error-msg text-xs" id={`socUrlError-${index}`}></span>
 						</label>
 					</div>
 					<div class="space-y-2">

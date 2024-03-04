@@ -2,10 +2,11 @@
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { updateResumeDetails } from '../store/store';
+	import { updateResumeDetails, appConfigData } from '../store/store';
 	import ModalComponentFullScreen from '$lib/modals/ModalFullScreen.svelte';
 	import { navigateTo } from '$lib/utils';
 	import ThemeDublin from './Themes/ThemeDublin.svelte';
+	import { goto } from '$app/navigation';
 
 	// let source = [];
 	const modalStore = getModalStore();
@@ -37,12 +38,9 @@
 		}
 	};
 	const updateCurrentPageItems = () => {
-		console.log('currentPage', currentPage);
-
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		currentPageItems = allResumeDetails.slice(startIndex, endIndex);
-		console.log('currentPageItems', currentPageItems);
 	};
 	const getResumeList = async () => {
 		try {
@@ -59,14 +57,11 @@
 				allResumeDetails = result.data.event?.responseBody;
 				updateCurrentPageItems();
 				// source = allResumeDetails;
-				console.log('details fetched successfully!', allResumeDetails);
 			} else {
 				loading = false;
-				console.log('something went wrong!', response);
 			}
 		} catch (error) {
 			loading = false;
-			console.log('error', error);
 		}
 	};
 	const getResume = async (resumeId) => {
@@ -86,11 +81,9 @@
 			.then((data) => {
 				resumeDetails = data.data.event?.responseBody;
 				updateResumeDetails(resumeDetails);
-				console.log('resumeDetails', resumeDetails);
 			})
 			.catch((error) => {
 				loading = false;
-				console.error('Error', error);
 			});
 	};
 	async function viewResume(resumeId, action) {
@@ -122,7 +115,6 @@
 			}
 		} catch (error) {
 			loading = false;
-			console.log(error);
 		}
 	}
 	async function showPopup(type, component = '', title = '', body = '') {
@@ -150,25 +142,41 @@
 		};
 		modalStore.trigger(modalComponent);
 	}
+	function editResume(item) {
+		console.log('item', item);
+
+		appConfigData.update((data) => ({
+			...data,
+			edit: true,
+			id: item.id,
+			theme: item.theme
+		}));
+		goto('/landing-page/form');
+	}
 </script>
 
 <div>
 	{#if allResumeDetails.length}
-		<div class="grid gap-x-14 py-4 text-slate-50 md:grid-cols-2 lg:grid-cols-4">
+		<div class="grid gap-x-14 py-4 md:grid-cols-2 lg:grid-cols-4">
 			{#each currentPageItems as item}
 				<div
 					class:background-img1={item.theme === 'theme1'}
 					class:background-img2={item.theme === 'theme2'}
 					class:background-img3={item.theme === 'theme3'}
 				>
-				<!-- class:placeholder={loading}
+					<!-- class:placeholder={loading}
 						class:animate-pulse={loading} -->
-					<div class="content card card-hover rounded-none">
+					<div
+						class:theme1={item.theme === 'theme1'}
+						class:theme2={item.theme === 'theme2'}
+						class:theme3={item.theme === 'theme3'}
+						class="card card-hover rounded-none"
+					>
 						<header class="card-header">
 							<span class="font-bold">Job Title:</span>
 							{item.job_title}
 						</header>
-						<section class="p-4">
+						<section class="p-4 h-80">
 							<p><span class="font-bold">Name:</span> {item.first_name} {item.last_name}</p>
 							<p><span class="font-bold">Email:</span> {item.email}</p>
 							<p class="line-clamp-5">
@@ -180,7 +188,7 @@
 								{item.theme === 'theme1' ? 'Dublin' : item.theme === 'theme2' ? 'Madrid' : 'Sydney'}
 							</p>
 						</section>
-						<footer class="card-footer grid h-40 grid-cols-3 content-end gap-4">
+						<footer class="card-footer grid grid-cols-3 content-end gap-4">
 							<button
 								type="button"
 								class="variant-filled btn btn-sm"
@@ -193,8 +201,12 @@
 									viewResume(item.id, 'view');
 								}}>View</button
 							> -->
-							<a href="{editUrl}{item.theme}/{item.id}" class="variant-filled btn btn-sm"
-								><button type="button">Edit</button></a
+							<button
+								class="variant-filled btn btn-sm"
+								type="button"
+								on:click={() => {
+									editResume(item);
+								}}>Edit</button
 							>
 						</footer>
 					</div>
@@ -218,7 +230,7 @@
 	{:else}
 		<div class="grid h-40 grid-cols-1 gap-x-14 py-4">
 			<div class="flex flex-col items-center justify-center text-center">
-				<h1 class="mb-6 text-3xl font-bold">No Resumies Found</h1>
+				<h1 class="mb-6 text-3xl font-bold">No Resumes Found</h1>
 				<p class="mb-8 text-gray-600">
 					Go to Templates page and create your <span class="text-2xl">Resume</span> within few
 					<span class="text-2xl">minutes!</span>
@@ -252,7 +264,18 @@
 		background-size: cover;
 		background-repeat: no-repeat;
 	}
-	.content {
-		background-color: rgba(0, 0, 0, 0.8);
+	.theme1 {
+		background-color: rgba(30, 58, 81, 0.9);
+		color: rgb(248, 250, 252);
+		height: 100%;
+	}
+	.theme2 {
+		background-color: rgba(55, 65, 131, 0.9);
+		color: rgb(248, 250, 252);
+		height: 100%;
+	}
+	.theme3 {
+		background-color: rgba(255, 255, 255, 0.9);
+		height: 100%;
 	}
 </style>

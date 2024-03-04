@@ -8,14 +8,16 @@
 	export let theme;
 	export let id;
 	export let edit;
-	let baseUrl = '/landing-page/form/';
-	let backUrl = `${baseUrl}edit/${theme}/${id}`;
+	// let baseUrl = '/landing-page/form/';
+	// let backUrl = `${baseUrl}edit/${theme}/${id}`;
 	let resume_details = $form;
-
 </script>
 
 {#if resume_details.theme}
-	<div class="overflow-none resume-height container mx-auto w-[794px] bg-slate-50">
+	<div
+		id="section-to-print"
+		class="overflow-none resume-box container mx-auto my-6 w-[794px] bg-slate-50"
+	>
 		<div class="body-container">
 			<div class="item1 bg-gray-700 px-8 py-14 text-slate-50">
 				<ResumeTitleBlock
@@ -28,15 +30,16 @@
 			<div class="item2 py-14 pl-2 pr-8"><Body details={resume_details} /></div>
 		</div>
 	</div>
-	<div class="flex flex-col items-center">
+	<!-- <div class="no-print flex flex-col items-center">
 		<a href={backUrl} class="variant-filled btn btn-sm my-6 w-[100px] py-3">Close</a>
-	</div>
+	</div> -->
 {/if}
 
 <style>
-	.resume-height {
+	.resume-box {
 		min-height: 100%;
-		/* scale: 0.8; */
+		border: 0.5px solid black;
+		/* scale: 0.9; */
 	}
 	.body-container {
 		display: grid;
@@ -46,4 +49,14 @@
 	.item2 {
 		grid-column: 2 / span 2;
 	}
+	/* @media print {
+		body * {
+			display: none;
+		}
+
+		#section-to-print,
+		#section-to-print * {
+			display: block;
+		}
+	} */
 </style>

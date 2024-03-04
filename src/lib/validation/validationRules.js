@@ -49,8 +49,9 @@ export const validationRules = {
     },
     last_name: {
         required: true,
-        pattern: /^[a-zA-Z]+$/,
-        message: 'Last name should not contain numeric values'
+        message: 'Last name is required'
+        // pattern: /^[a-zA-Z]+$/,
+        // message: 'Last name should not contain numeric values'
     },
     email: {
         required: true,

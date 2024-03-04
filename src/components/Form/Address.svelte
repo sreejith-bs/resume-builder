@@ -3,12 +3,12 @@
 	import { addressData, userDetailsData } from '../../store/store.js';
 	import DatePicker from '../DatePicker.svelte';
 	import { errors } from '../../store/store.js';
-	import { validateForm } from '$lib/validation/validation.js';
+	import { validateForm, customValidation } from '$lib/validation/validation.js';
 	import { formatDate } from '$lib/utils.js';
 
 	let address = $addressData;
 	let userDetails = $userDetailsData;
-	let dateOfBirth = new Date();
+	let dateOfBirth;
 	// let date_of_birth;
 	let fieldError = $errors;
 
@@ -37,6 +37,13 @@
 				[field]: value
 			}));
 	};
+
+	function validateInput(event) {
+		const inputElement = event.target;
+		const rule = JSON.parse(inputElement.dataset.rule.replace(/'/g, '"'));
+
+		customValidation.validate(inputElement, rule);
+	}
 </script>
 
 <div id="address">
@@ -49,34 +56,43 @@
 			<svelte:fragment slot="content">
 				<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
 					<label class="label">
-						<h5 class="text-sm tracking-wider">Address</h5>
+						<h5 class="text-sm tracking-wider">Address*</h5>
 						<input
 							name="address"
 							id="address"
+							data-rule="['required']"
+							data-error="addressError"
 							bind:value={address.address}
-							on:input={() => updateAddressDetails('address', address.address, 'address')}
-							on:blur={validateForm('address', address.address, 'address', 'nested')}
+							on:input={(event) => {
+								updateAddressDetails('address', address.address, 'address');
+								validateInput(event);
+							}}
+							on:blur={validateInput}
 							class="input rounded-sm border-0 border-s-4 tracking-wider"
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.address}<p id="errorContainer" class="error">{fieldError.address?.address}</p>{/if}
+						<span class="error-msg text-xs" id="addressError"></span>
 					</label>
 					<label class="label">
-						<h5 class="text-sm tracking-wider">Postal Code</h5>
+						<h5 class="text-sm tracking-wider">Postal Code*</h5>
 						<input
 							name="postal_code"
 							id="postal_code"
+							data-rule="['required']"
+							data-error="postalCodeError"
 							bind:value={address.postal_code}
-							on:input={() => updateAddressDetails('postal_code', address.postal_code, 'address')}
-							on:blur={validateForm('postal_code', address.postal_code, 'address', 'nested')}
+							on:input={(event) => {
+								updateAddressDetails('postal_code', address.postal_code, 'address');
+								validateInput(event);
+							}}
+							on:blur={validateInput}
+							
 							class="input rounded-sm border-0 border-s-4 tracking-wider"
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.postal_code}<p id="errorContainer" class="error">
-								{fieldError.address?.postal_code}
-							</p>{/if}
+						<span class="error-msg text-xs" id="postalCodeError"></span>
 					</label>
 				</div>
 				<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -86,37 +102,31 @@
 							name="driving_license"
 							id="driving_license"
 							bind:value={address.driving_license}
-							on:input={() =>
+							on:input={(event) =>
 								updateAddressDetails('driving_license', address.driving_license, 'address')}
-							on:blur={validateForm(
-								'driving_license',
-								address.driving_license,
-								'address',
-								'nested'
-							)}
 							class="input rounded-sm border-0 border-s-4 tracking-wider"
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.driving_license}<p id="errorContainer" class="error">
-								{fieldError.address?.driving_license}
-							</p>{/if}
 					</label>
 					<label class="label">
-						<h5 class="text-sm tracking-wider">Nationality</h5>
+						<h5 class="text-sm tracking-wider">Nationality*</h5>
 						<input
 							name="nationality"
 							id="nationality"
+							data-rule="['required']"
+							data-error="nationalityError"
 							bind:value={address.nationality}
-							on:input={() => updateAddressDetails('nationality', address.nationality, 'address')}
-							on:blur={validateForm('nationality', address.nationality, 'address', 'nested')}
+							on:input={(event) => {
+								updateAddressDetails('nationality', address.nationality, 'address');
+								validateInput(event);
+							}}
+							on:blur={validateInput}
 							class="input rounded-sm border-0 border-s-4 tracking-wider"
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.nationality}<p id="errorContainer" class="error">
-								{fieldError.address?.nationality}
-							</p>{/if}
+						<span class="error-msg text-xs" id="nationalityError"></span>
 					</label>
 				</div>
 				<div class="grid gap-4 pt-3 md:grid-cols-2 md:gap-10">
@@ -126,16 +136,12 @@
 							name="place_of_birth"
 							id="place_of_birth"
 							bind:value={address.place_of_birth}
-							on:input={() =>
+							on:input={(event) =>
 								updateAddressDetails('place_of_birth', address.place_of_birth, 'address')}
-							on:blur={validateForm('place_of_birth', address.place_of_birth, 'address', 'nested')}
 							class="input rounded-sm border-0 border-s-4 tracking-wider"
 							type="text"
 							placeholder="..."
 						/>
-						{#if fieldError.address?.place_of_birth}<p id="errorContainer" class="error">
-								{fieldError.address?.place_of_birth}
-							</p>{/if}
 					</label>
 					<label class="label">
 						<h5 class="text-sm tracking-wider">Date Of Birth</h5>
@@ -144,7 +150,6 @@
 							id="date_of_birth"
 							on:dateChange={updateAddressDetails('date_of_birth', dateOfBirth, 'user')}
 						/>
-						{#if fieldError.date_of_birth}<p id="errorContainer" class="error">{fieldError.date_of_birth}</p>{/if}
 					</label>
 				</div>
 				<div class="space-y-2">

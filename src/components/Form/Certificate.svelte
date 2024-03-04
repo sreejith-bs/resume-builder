@@ -3,7 +3,7 @@
 	import { certificateData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
 	import { errors } from '../../store/store.js';
-	import { validateForm } from '$lib/validation/validation.js';
+	import { validateForm, customValidation } from '$lib/validation/validation.js';
 
 	let certificate = $certificateData;
 	let fieldError = $errors.certificate;
@@ -16,7 +16,7 @@
 		// });
 		certificateData.update((data) => ({
 			...data,
-			data: [...data.data, {}] // Add a new empty object to the array
+			data: [...data.data, { label: '', url: '', is_active: true }] // Add a new empty object to the array
 		}));
 	}
 	function remove(index = 0) {
@@ -46,6 +46,12 @@
 			return data;
 		});
 	};
+	function validateInput(event) {
+		const inputElement = event.target;
+		const rule = JSON.parse(inputElement.dataset.rule.replace(/'/g, '"'));
+
+		customValidation.validate(inputElement, rule);
+	}
 </script>
 
 <div id="certificate">
@@ -65,7 +71,7 @@
 							</h4>
 						</div>
 						<div>
-							{#if index !== 0}
+							{#if certificate.data.length > 1}
 								<button
 									type="button"
 									class="variant-filled btn btn-sm"
@@ -83,27 +89,28 @@
 								name="label"
 								id={`label-${index}`}
 								bind:value={cert.label}
-								on:input={() => updateCertificateDetails('label', cert.label, index)}
-								on:blur={validateForm('label', cert.label, 'certificate', 'array', index)}
+								on:input={(event) => {
+									updateCertificateDetails('label', cert.label, index);
+								}}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.label}<p id="errorContainer" class="error">{fieldError?.[index]?.label}</p>{/if}
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Url</h5>
 							<input
 								name="url"
-								id={`url-${index}`}
+								id={`cUrl-${index}`}
 								bind:value={cert.url}
-								on:input={() => updateCertificateDetails('url', cert.url, index)}
-								on:blur={validateForm('url', cert.url, 'certificate', 'array', index)}
+								on:input={(event) => {
+									updateCertificateDetails('label', cert.label, index);
+								}}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.url}<p id="errorContainer" class="error">{fieldError?.[index]?.url}</p>{/if}
+							<!-- <span class="error-msg text-xs" id={`cUrlError-${index}`}></span> -->
 						</label>
 					</div>
 					<div class="space-y-2">

@@ -3,7 +3,7 @@
 	import { languageData } from '../../store/store.js';
 	import Title from '../../components/Form/Title.svelte';
 	import { errors } from '../../store/store.js';
-	import { validateForm } from '$lib/validation/validation.js';
+	import { validateForm, customValidation } from '$lib/validation/validation.js';
 
 	let language = $languageData;
 	let fieldError = $errors.language;
@@ -16,7 +16,7 @@
 		// });
 		languageData.update((data) => ({
 			...data,
-			data: [...data.data, {}] // Add a new empty object to the array
+			data: [...data.data, { label: '', rating: Boolean, is_active: true }] // Add a new empty object to the array
 		}));
 	}
 	function remove(index = 0) {
@@ -46,6 +46,12 @@
 			return data;
 		});
 	};
+	function validateInput(event) {
+		const inputElement = event.target;
+		const rule = JSON.parse(inputElement.dataset.rule.replace(/'/g, '"'));
+
+		customValidation.validate(inputElement, rule);
+	}
 </script>
 
 <div id="language">
@@ -78,18 +84,23 @@
 				<svelte:fragment slot="content">
 					<div class="grid gap-4 md:grid-cols-2 md:gap-10">
 						<label class="label">
-							<h5 class="text-sm tracking-wider">Language</h5>
+							<h5 class="text-sm tracking-wider">Language*</h5>
 							<input
 								name="language"
 								id={`language-${index}`}
 								bind:value={lang.label}
-								on:input={() => updateLanguageDetails('language', lang.label, index)}
-								on:blur={validateForm('label', lang.label, 'language', 'array', index)}
+								on:input={(event) => {
+									updateLanguageDetails('label', lang.label, index);
+									validateInput(event);
+								}}
+								on:blur={validateInput}
+								data-rule="['required']"
+								data-error={`languageError-${index}`}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="text"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.label}<p id="errorContainer" class="error">{fieldError?.[index]?.label}</p>{/if}
+							<span class="error-msg text-xs" id={`languageError-${index}`}></span>
 						</label>
 						<label class="label">
 							<h5 class="text-sm tracking-wider">Level</h5>
@@ -97,13 +108,13 @@
 								name="rating"
 								id={`rating-${index}`}
 								bind:value={lang.rating}
-								on:input={() => updateLanguageDetails('rating', lang.rating, index)}
-								on:blur={validateForm('rating', lang.rating, 'language', 'array', index)}
+								on:input={() => {
+									updateLanguageDetails('rating', lang.rating, index);
+								}}
 								class="input rounded-sm border-0 border-s-4 tracking-wider"
 								type="number"
 								placeholder="..."
 							/>
-							{#if fieldError?.[index]?.rating}<p id="errorContainer" class="error">{fieldError?.[index]?.rating}</p>{/if}
 						</label>
 					</div>
 					<div class="space-y-2">

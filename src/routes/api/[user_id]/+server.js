@@ -45,9 +45,7 @@ export async function GET(event) {
 }
 
 export async function DELETE(userId) {
-    console.log('userId', userId);
     let { params } = userId
-    console.log('params', params);
     let query = e.delete(e.UserDetails, () => ({
         filter_single: { id: params.user_id }
     }))
@@ -57,12 +55,11 @@ export async function DELETE(userId) {
 }
 
 export async function PUT(data) {
+    console.log('PUT--------------------------');
     let { params } = data
     let resumeId = params.user_id
     try {
         let formData = await data.request.json()
-        console.log('id*********', resumeId);
-        console.log('FORM-Data-----', formData);
         const query = e.update(e.UserDetails, () => ({
             filter_single: { id: resumeId },
             set: {
@@ -232,12 +229,10 @@ export async function PUT(data) {
                 }))),
             }
         }));
-        console.log('query', query);
         const responseBody = await query.run(client);
         return json(createSuccessResponse({ event: { responseBody } }));
         // return new Response(JSON.stringify(responseBody))
 
     } catch (error) {
-        console.log('error', error)
     }
 }

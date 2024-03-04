@@ -42,6 +42,7 @@
 		"axios": "^1.6.7",
 		"date-picker-svelte": "^2.10.1",
 		"edgedb": "^1.4.1",
+		"html-to-pdf": "^0.1.11",
 		"svelte-routing": "^2.12.0"
 	}
 }
