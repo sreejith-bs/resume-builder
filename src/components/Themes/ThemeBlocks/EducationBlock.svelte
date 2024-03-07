@@ -13,7 +13,7 @@
 		<hr />
 		<div>
 			{#each details.education as item}
-				<div class="pt-2">
+				<div id="eduSectionBreak" class="pt-2">
 					<h4 class="h4 font-bold">{item.course}</h4>
 					<p class="font-semibold">{item.institution}</p>
 					<p class="text-slate-500">

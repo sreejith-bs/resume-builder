@@ -5,9 +5,11 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { form } from '../../store/store';
 	import { goto } from '$app/navigation';
+
 	export let theme;
 	export let id;
 	export let edit;
+	
 	let resume_details = $form;
 
 	// onMount(() => {
@@ -28,12 +30,12 @@
 			jobTitle={resume_details.job_title}
 			theme={resume_details.theme}
 		/>
-		<div class="body-container">
+		<span class="body-container">
 			<div class="item1"><Body details={resume_details} /></div>
 			<div class="item2 rounded-lg bg-blue-900 px-4 py-4 text-slate-50">
 				<SideBar details={resume_details} />
 			</div>
-		</div>
+		</span>
 	</div>
 	<!-- <div class="no-print flex flex-col items-center">
 		<button class="variant-filled btn btn-sm my-6 w-[100px] py-3" on:click={closePreview}>Close</button>
@@ -43,7 +45,7 @@
 <style>
 	.resume-box {
 		min-height: 100%;
-		border: 0.5px solid black;
+		/* border: 0.5px solid black; */
 		/* scale: 0.9; */
 	}
 	.body-container {

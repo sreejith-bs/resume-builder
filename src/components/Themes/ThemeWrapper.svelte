@@ -4,13 +4,16 @@
 	import ThemeDublin from './ThemeDublin.svelte';
 	import ThemeMadrid from './ThemeMadrid.svelte';
 	import ThemeSydney from './ThemeSydney.svelte';
+	import { form } from '../../store/store';
 	import { goto } from '$app/navigation';
 
 	export let edit;
 	export let theme;
 	export let id;
 
-	let htmlToPdf;
+	let html2pdf;
+	let resume_details = $form;
+	let fullName = `${resume_details.first_name} ${resume_details.last_name}`;
 
 	const unsubscribe = appConfigData.subscribe((data) => {
 		edit = data.edit;
@@ -22,9 +25,9 @@
 		unsubscribe;
 		try {
 			const module = await import('html2pdf.js');
-			htmlToPdf = module.default;
+			html2pdf = module.default;
 		} catch (error) {
-			console.log('error-htmlToPdf', error);
+			console.log('error-html2pdf	', error);
 		}
 
 		if (!theme) {
@@ -40,7 +43,17 @@
 	function downloadResume() {
 		try {
 			let element = document.getElementById('section-to-print');
-			htmlToPdf(element);
+			let opt = {
+				margin: 0.2,
+				filename: `${fullName}.pdf`,
+				image: { type: 'jpeg', quality: 0.98 },
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait', floatPrecision: 'smart' },
+				pagebreak: theme === 'theme2' ? { mode: ['avoid-all', 'css', 'legacy'] } : {}
+				// pagebreak: { mode: 'avoid-all', avoid: 'span' }
+			};
+			// html2pdf(element);
+			html2pdf().set(opt).from(element).save();
 		} catch (error) {
 			console.log('download-error', error);
 		}
@@ -56,11 +69,9 @@
 		<ThemeSydney {theme} {id} {edit} />
 	{/if}
 	<div class="no-print">
-		<div class="close-button flex flex-col items-center">
-			<button class="variant-filled btn btn-sm my-6 w-[100px] py-3" on:click={closePreview}
-				>Close</button
-			>
-			<button class="variant-filled btn btn-sm my-6 w-[100px] py-3" on:click={downloadResume}
+		<div class="button-container flex gap-5">
+			<button class="variant-filled btn my-6 w-[100px] py-3" on:click={closePreview}>Close</button>
+			<button class="variant-filled btn my-6 px-4 py-3" on:click={downloadResume}
 				>Download PDF</button
 			>
 		</div>
@@ -69,14 +80,14 @@
 
 <style>
 	@media print {
-		body * {
+		/* body * {
 			display: none !important;
-		}
+		} */
 		.no-print {
 			display: none;
 		}
 	}
-	.close-button {
+	.button-container {
 		position: fixed;
 		bottom: 0;
 		left: 0;

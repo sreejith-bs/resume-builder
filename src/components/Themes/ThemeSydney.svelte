@@ -33,7 +33,7 @@
 <style>
 	.resume-box {
 		min-height: 100%;
-		border: 0.5px solid black;
+		/* border: 0.5px solid black; */
 		/* scale: 0.9; */
 	}
 	/* .body-container {
